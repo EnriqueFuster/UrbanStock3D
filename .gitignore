@@ -1,0 +1,19 @@
+# Local Python environments
+.venv/
+
+# Python-generated files
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Test and quality-tool caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local configuration and generated artifacts
+.env
+outputs/*
+!outputs/.gitkeep
