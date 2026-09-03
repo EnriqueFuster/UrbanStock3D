@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import AnyHttpUrl, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,3 +20,10 @@ class Settings(BaseSettings):
     keep_temporary: bool = False
     http_connect_timeout_seconds: float = Field(default=10.0, gt=0)
     http_read_timeout_seconds: float = Field(default=30.0, gt=0)
+    catastro_coordinate_url: AnyHttpUrl = AnyHttpUrl(
+        "https://ovc.catastro.meh.es/OVCServWeb/OVCWcfCallejero/"
+        "COVCCoordenadas.svc/rest/Consulta_RCCOOR"
+    )
+    catastro_building_wfs_url: AnyHttpUrl = AnyHttpUrl(
+        "https://ovc.catastro.meh.es/INSPIRE/wfsBU.aspx"
+    )

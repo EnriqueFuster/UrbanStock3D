@@ -11,6 +11,8 @@ from urbanstock3d.domain.cadastre import (
     CadastralBuildingPart,
     CadastralIdentity,
     ConstructionPeriod,
+    CoordinateQuery,
+    CoordinateResolution,
     FacadeDocument,
     Footprint2D,
     OfficialArea,
@@ -26,6 +28,31 @@ NAMESPACES = {
 
 class CatastroParseError(ValueError):
     """Raised when a Catastro response violates the expected contract."""
+
+
+def parse_coordinate_resolution(
+    coordinate_xml: bytes,
+    query: CoordinateQuery,
+) -> CoordinateResolution:
+    """Parse a coordinate-service response into a cadastral resolution."""
+    root = _parse_xml(coordinate_xml)
+    error_count = _optional_int(root, ".//cuerr")
+    if error_count is None:
+        raise CatastroParseError("Coordinate response has no error count")
+    if error_count:
+        descriptions = [
+            child.text.strip()
+            for child in root.iter()
+            if child.tag.endswith("des") and child.text and child.text.strip()
+        ]
+        detail = "; ".join(descriptions) or "unspecified Catastro error"
+        raise CatastroParseError(f"Coordinate resolution failed: {detail}")
+
+    return CoordinateResolution(
+        query=query,
+        cadastral_root_id=_required_text(root, ".//pc1") + _required_text(root, ".//pc2"),
+        address=_optional_text(root, ".//ldt"),
+    )
 
 
 def parse_single_building(

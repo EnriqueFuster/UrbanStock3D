@@ -41,6 +41,21 @@ class CadastralIdentity(DomainModel):
         return f"{self.namespace}.{self.local_id}"
 
 
+class CoordinateQuery(DomainModel):
+    """A geographic point used to resolve a cadastral parcel."""
+
+    longitude: float = Field(ge=-180, le=180)
+    latitude: float = Field(ge=-90, le=90)
+
+
+class CoordinateResolution(DomainModel):
+    """The cadastral parcel reference found at a geographic point."""
+
+    query: CoordinateQuery
+    cadastral_root_id: CadastralRootId
+    address: str | None = None
+
+
 class ConstructionPeriod(DomainModel):
     """Registered construction period, when supplied by Catastro."""
 
