@@ -8,6 +8,7 @@ from urbanstock3d.domain.cadastre import (
     CadastralRootId,
     CoordinateQuery,
     CoordinateResolution,
+    RefcatQuery,
 )
 from urbanstock3d.errors import (
     ProviderResponseError,
@@ -51,6 +52,19 @@ class CatastroProvider:
             },
         )
         return parse_coordinate_resolution(content, query)
+
+    def resolve_building(
+        self,
+        query: CoordinateQuery | RefcatQuery,
+        *,
+        srs_name: str = "EPSG:25830",
+    ) -> CadastralBuilding:
+        """Resolve user input and retrieve its cadastral building."""
+        if isinstance(query, CoordinateQuery):
+            cadastral_root_id = self.resolve_coordinate(query).cadastral_root_id
+        else:
+            cadastral_root_id = query.cadastral_root_id
+        return self.fetch_building(cadastral_root_id, srs_name=srs_name)
 
     def fetch_building(
         self,

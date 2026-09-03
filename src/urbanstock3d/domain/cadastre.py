@@ -56,6 +56,33 @@ class CoordinateResolution(DomainModel):
     address: str | None = None
 
 
+class RefcatQuery(DomainModel):
+    """A 14, 18 or 20 character cadastral reference supplied by a user."""
+
+    value: str
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def normalize_refcat(cls, value: object) -> object:
+        """Remove surrounding whitespace and normalize letters to uppercase."""
+        return value.strip().upper() if isinstance(value, str) else value
+
+    @field_validator("value")
+    @classmethod
+    def validate_refcat(cls, value: str) -> str:
+        """Accept only documented Catastro reference lengths and characters."""
+        if len(value) not in {14, 18, 20}:
+            raise ValueError("REFCAT must contain 14, 18 or 20 characters")
+        if not value.isalnum() or not value.isascii():
+            raise ValueError("REFCAT must contain only ASCII letters and numbers")
+        return value
+
+    @property
+    def cadastral_root_id(self) -> str:
+        """Return the parcel-level first 14 characters."""
+        return self.value[:14]
+
+
 class ConstructionPeriod(DomainModel):
     """Registered construction period, when supplied by Catastro."""
 
