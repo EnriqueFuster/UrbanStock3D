@@ -6,6 +6,7 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "httpx>=0.28,<1",
     "pydantic-settings>=2.10,<3",
+    "pyproj>=3.7,<4",
     "typer>=0.17,<1",
 ]
 
@@ -24,6 +25,7 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+addopts = "--basetemp=.pytest-tmp"
 
 [tool.ruff]
 line-length = 100

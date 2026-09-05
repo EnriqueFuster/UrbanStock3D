@@ -9,6 +9,7 @@ __pycache__/
 # Test and quality-tool caches
 .mypy_cache/
 .pytest_cache/
+.pytest-tmp/
 .ruff_cache/
 .coverage
 htmlcov/

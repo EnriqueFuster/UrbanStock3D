@@ -1,5 +1,6 @@
 """Command-line interface for UrbanStock3D."""
 
+from pathlib import Path
 from typing import Annotated
 
 import typer
@@ -8,6 +9,7 @@ from pydantic import ValidationError
 from urbanstock3d.config import Settings
 from urbanstock3d.domain.cadastre import CoordinateQuery, RefcatQuery
 from urbanstock3d.errors import UrbanStockError
+from urbanstock3d.outputs.cadastre import write_cadastral_artifacts
 from urbanstock3d.providers.catastro import CatastroProvider, create_http_client
 from urbanstock3d.providers.catastro_parser import CatastroParseError
 
@@ -31,8 +33,12 @@ def resolve(
     longitude: Annotated[float | None, typer.Option("--lon", help="WGS84 longitude.")] = None,
     latitude: Annotated[float | None, typer.Option("--lat", help="WGS84 latitude.")] = None,
     srs: Annotated[str, typer.Option(help="Projected CRS for building geometry.")] = "EPSG:25830",
+    output_dir: Annotated[
+        Path | None,
+        typer.Option(help="Root directory for generated artifacts."),
+    ] = None,
 ) -> None:
-    """Resolve a cadastral building and print its current record as JSON."""
+    """Resolve a cadastral building and print or write its current record."""
     try:
         query = build_query(refcat=refcat, longitude=longitude, latitude=latitude)
         settings = Settings()
@@ -45,7 +51,12 @@ def resolve(
         typer.echo(f"Error: {error}", err=True)
         raise typer.Exit(code=1) from error
 
-    typer.echo(building.model_dump_json(indent=2))
+    if output_dir is None:
+        typer.echo(building.model_dump_json(indent=2))
+        return
+
+    building_dir = write_cadastral_artifacts(building, output_dir)
+    typer.echo(f"Wrote cadastral artifacts to {building_dir}")
 
 
 def build_query(
