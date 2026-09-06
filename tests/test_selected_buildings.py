@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Any
 
 
-def test_golden_building_selection_is_complete_and_unique() -> None:
-    registry_path = Path("data/golden_buildings.json")
+def test_selected_buildings_are_complete_and_unique() -> None:
+    registry_path = Path("data/selected_buildings.json")
     registry: dict[str, Any] = json.loads(registry_path.read_text(encoding="utf-8"))
     buildings = registry["buildings"]
 
@@ -19,5 +19,14 @@ def test_golden_building_selection_is_complete_and_unique() -> None:
     for building in buildings:
         assert building["building_id"].endswith(building["cadastral_root_id"])
         assert building["observed"]["part_count"] > 0
+        assert building["observed"]["lidar_grid_cells"]
         assert building["coverage"]["catastro"] == "verified"
         assert building["coverage"]["pnoa"] == "verified"
+        assert building["coverage"]["facade"] in {
+            "verified",
+            "verified_with_warning",
+        }
+        if building["coverage"]["lidar"] == "asset_verified":
+            assert building["observed"]["lidar_asset_detail_url"].startswith(
+                "https://centrodedescargas.cnig.es/"
+            )

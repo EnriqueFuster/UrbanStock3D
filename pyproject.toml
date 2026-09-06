@@ -5,6 +5,8 @@ description = "Open-data semantic building intelligence for Spain."
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "httpx>=0.28,<1",
+    "laspy>=2.6,<3",
+    "lazrs>=0.7,<1",
     "pillow>=11.3,<13",
     "pydantic-settings>=2.10,<3",
     "pyproj>=3.7,<4",
@@ -38,6 +40,10 @@ select = ["E", "F", "I", "UP"]
 [tool.mypy]
 python_version = "3.12"
 strict = true
+
+[[tool.mypy.overrides]]
+module = ["laspy", "laspy.*"]
+ignore_missing_imports = true
 
 [build-system]
 requires = ["hatchling"]
