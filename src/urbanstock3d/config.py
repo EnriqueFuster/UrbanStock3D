@@ -27,3 +27,5 @@ class Settings(BaseSettings):
     catastro_building_wfs_url: AnyHttpUrl = AnyHttpUrl(
         "https://ovc.catastro.meh.es/INSPIRE/wfsBU.aspx"
     )
+    pnoa_wms_url: AnyHttpUrl = AnyHttpUrl("https://www.ign.es/wms-inspire/pnoa-ma")
+    pnoa_wms_layer: str = "OI.OrthoimageCoverage"

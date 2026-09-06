@@ -5,6 +5,7 @@ description = "Open-data semantic building intelligence for Spain."
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "httpx>=0.28,<1",
+    "pillow>=11.3,<13",
     "pydantic-settings>=2.10,<3",
     "pyproj>=3.7,<4",
     "typer>=0.17,<1",
