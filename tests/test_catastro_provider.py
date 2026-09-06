@@ -7,7 +7,7 @@ from urbanstock3d.errors import ProviderResponseError, ProviderTimeoutError
 from urbanstock3d.providers.catastro import CatastroProvider
 
 COORDINATE_XML = b"""
-<consulta_coordenadas>
+<consulta_coordenadas xmlns="http://www.catastro.meh.es/">
   <control><cucoor>1</cucoor><cuerr>0</cuerr></control>
   <coordenadas><coord><pc><pc1>4531917</pc1><pc2>YJ2743B</pc2></pc>
   <ldt>PS PECHINA 31 VALENCIA (VALENCIA)</ldt></coord></coordenadas>

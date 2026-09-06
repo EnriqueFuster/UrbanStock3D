@@ -24,6 +24,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("building_geojson", type=Path)
     parser.add_argument("--buffer-m", type=float, default=15.0)
     parser.add_argument("--pixel-size-m", type=float, default=0.25)
+    parser.add_argument("--save-preview", action="store_true")
     return parser.parse_args()
 
 
@@ -73,6 +74,7 @@ def audit_pnoa(
     *,
     buffer_m: float,
     pixel_size_m: float,
+    save_preview: bool = False,
 ) -> Path:
     """Request, validate and record a small PNOA WMS image."""
     geojson: dict[str, Any] = json.loads(building_geojson.read_text(encoding="utf-8"))
@@ -117,6 +119,10 @@ def audit_pnoa(
     if actual_size != (width, height):
         raise ValueError(f"PNOA returned image size {actual_size}, expected {(width, height)}")
 
+    preview_path = building_geojson.with_name("pnoa_preview.jpg")
+    if save_preview:
+        preview_path.write_bytes(response.content)
+
     report = {
         "provider": "IGN-CNIG",
         "product": "PNOA maximum currentness orthophoto",
@@ -139,6 +145,7 @@ def audit_pnoa(
             "image_mode": image_mode,
             "channel_extrema": extrema,
         },
+        "preview_path": preview_path.name if save_preview else None,
     }
     report_path = building_geojson.with_name("pnoa_audit.json")
     report_path.write_text(
@@ -155,6 +162,7 @@ def main() -> None:
         args.building_geojson,
         buffer_m=args.buffer_m,
         pixel_size_m=args.pixel_size_m,
+        save_preview=args.save_preview,
     )
     print(f"Wrote PNOA audit to {report_path}")
 

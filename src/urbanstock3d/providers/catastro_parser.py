@@ -36,7 +36,7 @@ def parse_coordinate_resolution(
 ) -> CoordinateResolution:
     """Parse a coordinate-service response into a cadastral resolution."""
     root = _parse_xml(coordinate_xml)
-    error_count = _optional_int(root, ".//cuerr")
+    error_count = _optional_int(root, ".//{*}cuerr")
     if error_count is None:
         raise CatastroParseError("Coordinate response has no error count")
     if error_count:
@@ -50,8 +50,8 @@ def parse_coordinate_resolution(
 
     return CoordinateResolution(
         query=query,
-        cadastral_root_id=_required_text(root, ".//pc1") + _required_text(root, ".//pc2"),
-        address=_optional_text(root, ".//ldt"),
+        cadastral_root_id=_required_text(root, ".//{*}pc1") + _required_text(root, ".//{*}pc2"),
+        address=_optional_text(root, ".//{*}ldt"),
     )
 
 
