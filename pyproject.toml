@@ -7,6 +7,7 @@ dependencies = [
     "httpx>=0.28,<1",
     "laspy>=2.6,<3",
     "lazrs>=0.7,<1",
+    "numpy>=2.3,<3",
     "pillow>=11.3,<13",
     "pydantic-settings>=2.10,<3",
     "pyproj>=3.7,<4",
