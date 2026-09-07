@@ -148,6 +148,42 @@ def summarize_lidar_bbox(
     )
 
 
+def write_lidar_bbox_crop(
+    source: Path,
+    destination: Path,
+    bbox: tuple[float, float, float, float],
+    *,
+    chunk_size: int = 1_000_000,
+) -> int:
+    """Write a spatial subset while preserving the source point format and metadata."""
+    min_x, min_y, max_x, max_y = bbox
+    if min_x >= max_x or min_y >= max_y:
+        raise ValueError("LiDAR crop bbox must have positive area")
+    if chunk_size <= 0:
+        raise ValueError("LiDAR chunk size must be positive")
+    if source.resolve() == destination.resolve():
+        raise ValueError("LiDAR crop destination must differ from its source")
+
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    point_count = 0
+    with laspy.open(source) as reader:
+        with laspy.open(destination, mode="w", header=reader.header) as writer:
+            for points in reader.chunk_iterator(chunk_size):
+                x = np.asarray(points.x)
+                y = np.asarray(points.y)
+                inside = (x >= min_x) & (x <= max_x) & (y >= min_y) & (y <= max_y)
+                if not np.any(inside):
+                    continue
+                selected = points[inside]
+                writer.write_points(selected)
+                point_count += len(selected)
+
+    if point_count == 0:
+        destination.unlink(missing_ok=True)
+        raise ValueError("LiDAR crop contains no points")
+    return point_count
+
+
 def summarize_building_lidar(
     path: Path,
     rings: tuple[tuple[tuple[float, float], ...], ...],

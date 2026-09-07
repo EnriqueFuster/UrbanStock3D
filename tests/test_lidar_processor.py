@@ -10,6 +10,7 @@ from urbanstock3d.processors.lidar import (
     polygon_area,
     summarize_building_lidar,
     summarize_lidar_bbox,
+    write_lidar_bbox_crop,
 )
 
 
@@ -58,6 +59,33 @@ def test_summarize_lidar_bbox_rejects_empty_crop(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="contains no points"):
         summarize_lidar_bbox(path, (0.0, 0.0, 1.0, 1.0))
+
+
+def test_write_lidar_bbox_crop_preserves_selected_points(tmp_path: Path) -> None:
+    header = laspy.LasHeader(point_format=8, version="1.4")
+    points = laspy.LasData(header)
+    points.x = np.array([1.0, 5.0, 20.0])
+    points.y = np.array([1.0, 5.0, 20.0])
+    points.z = np.array([10.0, 15.0, 30.0])
+    points.classification = np.array([2, 6, 5], dtype=np.uint8)
+    points.red = np.array([100, 200, 300], dtype=np.uint16)
+    source = tmp_path / "source.las"
+    destination = tmp_path / "crop.laz"
+    points.write(source)
+
+    count = write_lidar_bbox_crop(
+        source,
+        destination,
+        (0.0, 0.0, 10.0, 10.0),
+        chunk_size=2,
+    )
+
+    crop = laspy.read(destination)
+    assert count == 2
+    assert len(crop.points) == 2
+    assert crop.header.point_format.id == 8
+    assert np.asarray(crop.classification).tolist() == [2, 6]
+    assert np.asarray(crop.red).tolist() == [100, 200]
 
 
 def test_points_in_polygon_excludes_hole() -> None:

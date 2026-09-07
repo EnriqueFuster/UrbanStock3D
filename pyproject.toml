@@ -19,7 +19,11 @@ urbanstock = "urbanstock3d.cli:app"
 
 [dependency-groups]
 dev = [
+    "ipykernel>=6,<8",
+    "matplotlib>=3.10,<4",
     "mypy>=1.17,<2",
+    "nbformat>=5.10,<6",
+    "plotly>=6,<7",
     "pre-commit>=4.3,<5",
     "pytest>=8.4,<9",
     "pytest-cov>=6.2,<7",

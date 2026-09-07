@@ -14,6 +14,7 @@ from urbanstock3d.processors.lidar import (
     inspect_lidar_header,
     summarize_building_lidar,
     summarize_lidar_bbox,
+    write_lidar_bbox_crop,
 )
 from urbanstock3d.providers.pnoa_lidar import (
     download_cnig_asset,
@@ -29,6 +30,11 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("detail_url")
     parser.add_argument("building_geojson", type=Path)
     parser.add_argument("--buffer-m", type=float, default=25.0)
+    parser.add_argument(
+        "--save-crop",
+        type=Path,
+        help="Optionally retain the small context crop as LAS/LAZ for exploration.",
+    )
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args()
 
@@ -49,6 +55,7 @@ def process_remote_crop(
     *,
     buffer_m: float,
     output: Path,
+    save_crop: Path | None = None,
 ) -> Path:
     """Download, crop and summarize one building context without retaining raw data."""
     building: dict[str, Any] = json.loads(building_geojson.read_text(encoding="utf-8"))
@@ -82,6 +89,11 @@ def process_remote_crop(
                 raw_path,
                 building_rings,
                 crop_bbox,
+            )
+            saved_crop_point_count = (
+                write_lidar_bbox_crop(raw_path, save_crop, crop_bbox)
+                if save_crop is not None
+                else None
             )
 
     report = {
@@ -127,7 +139,16 @@ def process_remote_crop(
             ],
         },
         "raw_source_retained": False,
-        "crop_source_retained": False,
+        "crop_source_retained": save_crop is not None,
+        "crop_source": (
+            {
+                "path": save_crop.as_posix(),
+                "point_count": saved_crop_point_count,
+                "kind": "building_bbox_with_buffer",
+            }
+            if save_crop is not None
+            else None
+        ),
     }
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
@@ -145,6 +166,7 @@ def main() -> None:
         args.building_geojson,
         buffer_m=args.buffer_m,
         output=args.output,
+        save_crop=args.save_crop,
     )
     print(f"Wrote LiDAR crop report to {report_path}")
 
