@@ -10,10 +10,15 @@ from typing import Any
 import httpx
 
 from urbanstock3d.config import Settings
-from urbanstock3d.processors.lidar import inspect_lidar_header, summarize_lidar_bbox
+from urbanstock3d.processors.lidar import (
+    inspect_lidar_header,
+    summarize_building_lidar,
+    summarize_lidar_bbox,
+)
 from urbanstock3d.providers.pnoa_lidar import (
     download_cnig_asset,
     footprint_bbox_utm,
+    footprint_rings_utm,
     parse_cnig_asset_page,
 )
 
@@ -51,6 +56,7 @@ def process_remote_crop(
     if geometry["type"] != "Polygon":
         raise ValueError("LiDAR crop currently supports Polygon buildings only")
     building_bbox = footprint_bbox_utm(geometry["coordinates"])
+    building_rings = footprint_rings_utm(geometry["coordinates"])
     crop_bbox = buffered_bbox(building_bbox, buffer_m)
 
     settings = Settings()
@@ -72,6 +78,11 @@ def process_remote_crop(
             download = download_cnig_asset(client, asset, raw_path)
             header = inspect_lidar_header(raw_path)
             crop = summarize_lidar_bbox(raw_path, crop_bbox)
+            building_summary = summarize_building_lidar(
+                raw_path,
+                building_rings,
+                crop_bbox,
+            )
 
     report = {
         "provider": "IGN-CNIG",
@@ -92,6 +103,25 @@ def process_remote_crop(
                         crop.z_p01_m - crop.z_min_m > 20 or crop.z_max_m - crop.z_p99_m > 20
                     ),
                     "legacy_overlap_class_present": (crop.legacy_overlap_class_point_count > 0),
+                }.items()
+                if applies
+            ],
+        },
+        "building": {
+            "selection": "classified building points inside cadastral footprint",
+            "ground_reference": "median class-2 elevation in context crop",
+            **building_summary.to_dict(),
+            "quality_flags": [
+                flag
+                for flag, applies in {
+                    "legacy_overlap_class_excluded": (
+                        building_summary.legacy_overlap_class_point_count > 0
+                    ),
+                    "low_building_point_count": building_summary.building_point_count < 100,
+                    "low_ground_point_count": (building_summary.context_ground_point_count < 100),
+                    "usable_density_below_published_density": (
+                        building_summary.usable_point_density_m2 < asset.density_points_m2
+                    ),
                 }.items()
                 if applies
             ],

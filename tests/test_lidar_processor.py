@@ -4,7 +4,13 @@ import laspy
 import numpy as np
 import pytest
 
-from urbanstock3d.processors.lidar import inspect_lidar_header, summarize_lidar_bbox
+from urbanstock3d.processors.lidar import (
+    inspect_lidar_header,
+    points_in_polygon,
+    polygon_area,
+    summarize_building_lidar,
+    summarize_lidar_bbox,
+)
 
 
 def test_inspect_lidar_header_reads_metadata_without_loading_points(tmp_path: Path) -> None:
@@ -52,3 +58,37 @@ def test_summarize_lidar_bbox_rejects_empty_crop(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="contains no points"):
         summarize_lidar_bbox(path, (0.0, 0.0, 1.0, 1.0))
+
+
+def test_points_in_polygon_excludes_hole() -> None:
+    rings = (
+        ((0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0), (0.0, 0.0)),
+        ((4.0, 4.0), (6.0, 4.0), (6.0, 6.0), (4.0, 6.0), (4.0, 4.0)),
+    )
+
+    mask = points_in_polygon(np.array([2.0, 5.0, 12.0]), np.array([2.0, 5.0, 5.0]), rings)
+
+    assert mask.tolist() == [True, False, False]
+    assert polygon_area(rings) == 96
+
+
+def test_summarize_building_lidar_normalizes_roof_height(tmp_path: Path) -> None:
+    header = laspy.LasHeader(point_format=6, version="1.4")
+    points = laspy.LasData(header)
+    points.x = np.array([1.0, 2.0, 3.0, 8.0, 9.0])
+    points.y = np.array([1.0, 2.0, 3.0, 8.0, 9.0])
+    points.z = np.array([20.0, 22.0, 24.0, 10.0, 12.0])
+    points.classification = np.array([6, 6, 12, 2, 2], dtype=np.uint8)
+    path = tmp_path / "building.las"
+    points.write(path)
+    rings = (((0.0, 0.0), (5.0, 0.0), (5.0, 5.0), (0.0, 5.0), (0.0, 0.0)),)
+
+    summary = summarize_building_lidar(path, rings, (0.0, 0.0, 10.0, 10.0), chunk_size=2)
+
+    assert summary.footprint_area_m2 == 25
+    assert summary.footprint_point_count == 3
+    assert summary.usable_point_count == 2
+    assert summary.building_point_count == 2
+    assert summary.ground_elevation_p50_m == 11
+    assert summary.roof_elevation_p50_m == 21
+    assert summary.height_p50_m == 10

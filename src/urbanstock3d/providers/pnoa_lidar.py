@@ -58,14 +58,25 @@ def footprint_bbox_utm(
     coordinates: list[list[list[float]]],
 ) -> tuple[float, float, float, float]:
     """Transform polygon coordinates from WGS84 to ETRS89 / UTM zone 30N."""
-    positions = [position for ring in coordinates for position in ring]
+    rings = footprint_rings_utm(coordinates)
+    positions = [position for ring in rings for position in ring]
     if not positions:
         raise ValueError("Building geometry has no coordinates")
-
-    transformer = Transformer.from_crs(WGS84, PENINSULA_UTM, always_xy=True)
-    projected = [transformer.transform(position[0], position[1]) for position in positions]
-    xs, ys = zip(*projected, strict=True)
+    xs, ys = zip(*positions, strict=True)
     return min(xs), min(ys), max(xs), max(ys)
+
+
+def footprint_rings_utm(
+    coordinates: list[list[list[float]]],
+) -> tuple[tuple[tuple[float, float], ...], ...]:
+    """Transform GeoJSON polygon rings to ETRS89 / UTM zone 30N."""
+    if not coordinates or any(not ring for ring in coordinates):
+        raise ValueError("Building geometry has no coordinates")
+    transformer = Transformer.from_crs(WGS84, PENINSULA_UTM, always_xy=True)
+    return tuple(
+        tuple(transformer.transform(position[0], position[1]) for position in ring)
+        for ring in coordinates
+    )
 
 
 def required_grid_cells(
