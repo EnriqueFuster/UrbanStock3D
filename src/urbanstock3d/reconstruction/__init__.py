@@ -7,7 +7,10 @@ from urbanstock3d.reconstruction.enums import (
     ReconstructionPriority,
     ReconstructionStatus,
 )
-from urbanstock3d.reconstruction.execution import execute_reconstruction_plan
+from urbanstock3d.reconstruction.execution import (
+    execute_reconstruction_plan,
+    finalize_or_execute_fallback,
+)
 from urbanstock3d.reconstruction.models import (
     GeometryProvenance,
     LidarQualityReport,
@@ -20,6 +23,7 @@ from urbanstock3d.reconstruction.models import (
 __all__ = [
     "BackendName",
     "execute_reconstruction_plan",
+    "finalize_or_execute_fallback",
     "GeometryProvenance",
     "LodRequest",
     "LidarQualityReport",

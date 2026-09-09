@@ -9,6 +9,7 @@ from urbanstock3d.reconstruction.models import (
     ReconstructionPlan,
     ReconstructionResult,
 )
+from urbanstock3d.reconstruction.validation.quality import ReconstructionQualityReport
 
 
 def execute_reconstruction_plan(
@@ -38,4 +39,36 @@ def execute_reconstruction_plan(
         requested_lod=plan.requested_lod,
         targeted_lod=plan.target_lod,
         warnings=(*plan.warnings, *result.warnings),
+    )
+
+
+def finalize_or_execute_fallback(
+    plan: ReconstructionPlan,
+    evidence: ReconstructionEvidence,
+    registry: BackendRegistry,
+    primary_result: ReconstructionResult,
+    primary_quality: ReconstructionQualityReport,
+) -> ReconstructionResult:
+    """Return an accepted primary result or execute its single planned LoD fallback."""
+    if primary_quality.accepted:
+        return primary_result
+    if plan.fallback_lod is None or plan.selected_backend is None:
+        return ReconstructionResult(
+            status=ReconstructionStatus.ABSTAINED,
+            requested_lod=plan.requested_lod,
+            targeted_lod=None,
+            delivered_lod=None,
+            backend=None,
+            model_path=None,
+            provenance=None,
+            reasons=("primary reconstruction failed quality control", *primary_quality.failures),
+            warnings=primary_quality.warnings,
+        )
+    backend = registry.get(plan.selected_backend)
+    fallback = backend.reconstruct(evidence=evidence, lod=plan.fallback_lod)
+    return replace(
+        fallback,
+        requested_lod=plan.requested_lod,
+        targeted_lod=plan.fallback_lod,
+        warnings=("primary reconstruction rejected; executed one LoD fallback", *fallback.warnings),
     )
