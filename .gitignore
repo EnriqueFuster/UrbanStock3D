@@ -11,9 +11,13 @@ __pycache__/
 .mypy_cache/
 .pytest_cache/
 .pytest-tmp/
+.tmp/
 .ruff_cache/
 .coverage
 htmlcov/
+
+# Malformed local pytest temp paths created by Windows shell escaping
+/UsersUsuarioAppDataLocalTempurbanstock3d-*/
 
 # Local configuration and generated artifacts
 .env
