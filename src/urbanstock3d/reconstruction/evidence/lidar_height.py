@@ -100,6 +100,23 @@ def save_height_raster(raster: ObservedHeightRaster, destination: Path) -> Path:
     return destination
 
 
+def load_height_raster(source: Path) -> ObservedHeightRaster:
+    """Load a persisted observed-height raster with its spatial metadata."""
+    with np.load(source) as data:
+        origin = data["origin"]
+        return ObservedHeightRaster(
+            elevation_m=data["elevation_m"],
+            point_count=data["point_count"],
+            footprint_mask=data["footprint_mask"],
+            valid_mask=data["valid_mask"],
+            origin_x=float(origin[0]),
+            origin_y=float(origin[1]),
+            resolution_m=float(data["resolution_m"]),
+            crs=str(data["crs"]),
+            height_percentile=float(data["height_percentile"]),
+        )
+
+
 def _rasterize_observed_heights(
     x: np.ndarray[Any, np.dtype[np.floating[Any]]],
     y: np.ndarray[Any, np.dtype[np.floating[Any]]],

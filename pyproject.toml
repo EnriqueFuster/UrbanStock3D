@@ -11,6 +11,7 @@ dependencies = [
     "pillow>=11.3,<13",
     "pydantic-settings>=2.10,<3",
     "pyproj>=3.7,<4",
+    "rasterio>=1.4,<2",
     "scipy>=1.16,<2",
     "typer>=0.17,<1",
 ]
@@ -49,7 +50,7 @@ python_version = "3.12"
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["laspy", "laspy.*", "scipy", "scipy.*"]
+module = ["laspy", "laspy.*", "rasterio", "rasterio.*", "scipy", "scipy.*"]
 ignore_missing_imports = true
 
 [build-system]
