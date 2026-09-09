@@ -6,7 +6,11 @@ from pathlib import Path
 from typing import Any
 
 from urbanstock3d.providers.pnoa_lidar import footprint_polygons_utm
-from urbanstock3d.reconstruction.validation import assess_cityjson_lidar_fit, validate_cityjsonseq
+from urbanstock3d.reconstruction.validation import (
+    assess_cityjson_lidar_fit,
+    evaluate_reconstruction_quality,
+    validate_cityjsonseq,
+)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -35,6 +39,7 @@ def build_report(
         if lidar_path is not None
         else None
     )
+    decision = evaluate_reconstruction_quality(report, lidar_fit) if lidar_fit else None
     payload = {
         "schema_version": 1,
         "kind": "reconstruction_geometry_quality",
@@ -42,6 +47,7 @@ def build_report(
         "source": {"model": model.as_posix(), "footprint": building_path.as_posix()},
         "quality": report.to_dict(),
         "lidar_fit": lidar_fit.to_dict() if lidar_fit else None,
+        "decision": decision.to_dict() if decision else None,
     }
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")

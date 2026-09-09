@@ -10,12 +10,22 @@ from urbanstock3d.reconstruction.validation.lidar_fit import (
     LidarFitReport,
     assess_cityjson_lidar_fit,
 )
+from urbanstock3d.reconstruction.validation.quality import (
+    QualityConfidence,
+    ReconstructionQualityParameters,
+    ReconstructionQualityReport,
+    evaluate_reconstruction_quality,
+)
 
 __all__ = [
     "CityJsonQualityParameters",
     "CityJsonQualityReport",
     "LidarFitParameters",
     "LidarFitReport",
+    "QualityConfidence",
+    "ReconstructionQualityParameters",
+    "ReconstructionQualityReport",
     "assess_cityjson_lidar_fit",
+    "evaluate_reconstruction_quality",
     "validate_cityjsonseq",
 ]
