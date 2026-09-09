@@ -7,3 +7,4 @@ from urbanstock3d.reconstruction.quality.lidar import (
 )
 
 __all__ = ["LidarQualityParameters", "assess_lidar_quality", "local_planar_support"]
+"""Pre-reconstruction quality and feasibility analysis."""
