@@ -12,7 +12,7 @@ def test_selected_buildings_are_complete_and_unique() -> None:
     profiles = [building["profile"] for building in buildings]
 
     assert registry["schema_version"] == 1
-    assert len(buildings) == 5
+    assert len(buildings) == 8
     assert len(building_ids) == len(set(building_ids))
     assert len(profiles) == len(set(profiles))
 
@@ -21,8 +21,9 @@ def test_selected_buildings_are_complete_and_unique() -> None:
         assert building["observed"]["part_count"] > 0
         assert building["observed"]["lidar_grid_cells"]
         assert building["coverage"]["catastro"] == "verified"
-        assert building["coverage"]["pnoa"] == "verified"
+        assert building["coverage"]["pnoa"] in {"pending", "verified"}
         assert building["coverage"]["facade"] in {
+            "pending",
             "verified",
             "verified_with_warning",
         }

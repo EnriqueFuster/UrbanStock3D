@@ -41,6 +41,30 @@
       "profile": "compact low-rise residential building in a dense coastal neighbourhood",
       "observed": {"current_use": "1_residential", "part_count": 3, "gross_floor_area_m2": 241.0, "lidar_grid_cells": ["729-4373-H30"], "lidar_asset_detail_urls": ["https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12596877"]},
       "coverage": {"catastro": "verified", "facade": "verified", "pnoa": "verified", "lidar": "asset_verified", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+    },
+    {
+      "building_id": "ES.SDGC.BU.3051101YJ2735A",
+      "cadastral_root_id": "3051101YJ2735A",
+      "query": {"longitude": -0.4075616106937111, "latitude": 39.49441539514275},
+      "profile": "large multi-component residential complex with highly fragmented roof geometry",
+      "observed": {"current_use": "1_residential", "part_count": 139, "gross_floor_area_m2": 22892.0, "lidar_grid_cells": ["722-4375-H30", "722-4376-H30", "723-4375-H30", "723-4376-H30"], "lidar_asset_detail_urls": []},
+      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+    },
+    {
+      "building_id": "ES.SDGC.BU.4721301YJ2742B",
+      "cadastral_root_id": "4721301YJ2742B",
+      "query": {"longitude": -0.3882480080696972, "latitude": 39.468051402925205},
+      "profile": "large retail building with an irregular footprint and heterogeneous roof sections",
+      "observed": {"current_use": "4_2_retail", "part_count": 39, "gross_floor_area_m2": 27150.0, "lidar_grid_cells": ["724-4372-H30", "724-4373-H30"], "lidar_asset_detail_urls": []},
+      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+    },
+    {
+      "building_id": "ES.SDGC.BU.0892612YJ2709S",
+      "cadastral_root_id": "0892612YJ2709S",
+      "query": {"longitude": -0.43279166418013065, "latitude": 39.53134809029518},
+      "profile": "detached low-rise residential building with a compact non-rectangular footprint",
+      "observed": {"current_use": "1_residential", "part_count": 1, "gross_floor_area_m2": 385.0, "lidar_grid_cells": ["720-4379-H30"], "lidar_asset_detail_urls": []},
+      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
     }
   ]
 }
