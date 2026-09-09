@@ -5,5 +5,6 @@ from urbanstock3d.reconstruction.backends.base import (
     ReconstructionBackend,
 )
 from urbanstock3d.reconstruction.backends.registry import BackendRegistry
+from urbanstock3d.reconstruction.backends.roofer import RooferBackend
 
-__all__ = ["BackendCapabilities", "BackendRegistry", "ReconstructionBackend"]
+__all__ = ["BackendCapabilities", "BackendRegistry", "ReconstructionBackend", "RooferBackend"]
