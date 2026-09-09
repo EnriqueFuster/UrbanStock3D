@@ -27,6 +27,6 @@ def test_selected_buildings_are_complete_and_unique() -> None:
             "verified_with_warning",
         }
         if building["coverage"]["lidar"] == "asset_verified":
-            assert building["observed"]["lidar_asset_detail_url"].startswith(
-                "https://centrodedescargas.cnig.es/"
-            )
+            asset_urls = building["observed"]["lidar_asset_detail_urls"]
+            assert len(asset_urls) == len(building["observed"]["lidar_grid_cells"])
+            assert all(url.startswith("https://centrodedescargas.cnig.es/") for url in asset_urls)

@@ -19,3 +19,7 @@ class ProviderTimeoutError(ProviderError):
 
 class ProviderResponseError(ProviderError):
     """Raised when a provider returns an unsuccessful response."""
+
+
+class RooferExecutionError(UrbanStockError):
+    """Raised when the external Roofer reconstruction process fails."""

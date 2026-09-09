@@ -1,5 +1,6 @@
 # Local Python environments
 .venv/
+.tools/
 
 # Python-generated files
 __pycache__/

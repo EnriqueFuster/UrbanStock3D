@@ -184,6 +184,54 @@ def write_lidar_bbox_crop(
     return point_count
 
 
+def write_lidar_bbox_crop_from_sources(
+    sources: tuple[Path, ...],
+    destination: Path,
+    bbox: tuple[float, float, float, float],
+    *,
+    chunk_size: int = 1_000_000,
+) -> int:
+    """Crop and merge compatible LAS/LAZ sources into one context point cloud."""
+    if not sources:
+        raise ValueError("At least one LiDAR source is required")
+    min_x, min_y, max_x, max_y = bbox
+    if min_x >= max_x or min_y >= max_y:
+        raise ValueError("LiDAR crop bbox must have positive area")
+    if chunk_size <= 0:
+        raise ValueError("LiDAR chunk size must be positive")
+    resolved_destination = destination.resolve()
+    if any(source.resolve() == resolved_destination for source in sources):
+        raise ValueError("LiDAR crop destination must differ from its sources")
+
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    point_count = 0
+    with laspy.open(sources[0]) as first_reader:
+        output_header = first_reader.header
+    with laspy.open(destination, mode="w", header=output_header) as writer:
+        for source in sources:
+            with laspy.open(source) as reader:
+                if reader.header.point_format != output_header.point_format:
+                    raise ValueError("LiDAR source point formats are incompatible")
+                for points in reader.chunk_iterator(chunk_size):
+                    x = np.asarray(points.x)
+                    y = np.asarray(points.y)
+                    inside = (x >= min_x) & (x <= max_x) & (y >= min_y) & (y <= max_y)
+                    if not np.any(inside):
+                        continue
+                    selected = points[inside]
+                    selected.change_scaling(
+                        scales=output_header.scales,
+                        offsets=output_header.offsets,
+                    )
+                    writer.write_points(selected)
+                    point_count += len(selected)
+
+    if point_count == 0:
+        destination.unlink(missing_ok=True)
+        raise ValueError("LiDAR crop contains no points")
+    return point_count
+
+
 def summarize_building_lidar(
     path: Path,
     rings: tuple[tuple[tuple[float, float], ...], ...],
@@ -230,6 +278,73 @@ def summarize_building_lidar(
     ground_p50 = float(np.percentile(ground, 50))
     roof_p50, roof_p95 = np.percentile(roof, [50, 95])
     footprint_area = polygon_area(rings)
+    unusable_count = histogram[12]
+    usable_count = footprint_point_count - unusable_count
+    return BuildingLidarSummary(
+        footprint_area_m2=footprint_area,
+        footprint_point_count=footprint_point_count,
+        usable_point_count=usable_count,
+        usable_point_density_m2=usable_count / footprint_area,
+        class_histogram={str(key): histogram[key] for key in sorted(histogram)},
+        building_point_count=histogram[BUILDING_CLASS],
+        vegetation_point_count=sum(histogram[key] for key in VEGETATION_CLASSES),
+        legacy_overlap_class_point_count=unusable_count,
+        context_ground_point_count=len(ground),
+        ground_elevation_p50_m=ground_p50,
+        roof_elevation_p50_m=float(roof_p50),
+        roof_elevation_p95_m=float(roof_p95),
+        height_p50_m=float(roof_p50) - ground_p50,
+        height_p95_m=float(roof_p95) - ground_p50,
+    )
+
+
+def summarize_multipolygon_building_lidar(
+    path: Path,
+    polygons: tuple[tuple[tuple[tuple[float, float], ...], ...], ...],
+    context_bbox: tuple[float, float, float, float],
+    *,
+    chunk_size: int = 1_000_000,
+) -> BuildingLidarSummary:
+    """Measure one building whose footprint can have multiple polygons."""
+    if len(polygons) == 1:
+        return summarize_building_lidar(path, polygons[0], context_bbox, chunk_size=chunk_size)
+    if not polygons:
+        raise ValueError("Building footprint must contain at least one polygon")
+
+    histogram: Counter[int] = Counter()
+    footprint_point_count = 0
+    ground_chunks: list[np.ndarray[Any, np.dtype[np.floating[Any]]]] = []
+    roof_chunks: list[np.ndarray[Any, np.dtype[np.floating[Any]]]] = []
+    min_x, min_y, max_x, max_y = context_bbox
+    with laspy.open(path) as reader:
+        for points in reader.chunk_iterator(chunk_size):
+            x = np.asarray(points.x)
+            y = np.asarray(points.y)
+            in_context = (x >= min_x) & (x <= max_x) & (y >= min_y) & (y <= max_y)
+            if not np.any(in_context):
+                continue
+            x = x[in_context]
+            y = y[in_context]
+            z = np.asarray(points.z)[in_context]
+            classifications = np.asarray(points.classification, dtype=np.uint8)[in_context]
+            ground_chunks.append(z[classifications == GROUND_CLASS])
+            in_footprint = np.zeros(x.shape, dtype=np.bool_)
+            for rings in polygons:
+                in_footprint |= points_in_polygon(x, y, rings)
+            footprint_classes = classifications[in_footprint]
+            footprint_z = z[in_footprint]
+            values, counts = np.unique(footprint_classes, return_counts=True)
+            histogram.update(
+                {int(value): int(count) for value, count in zip(values, counts, strict=True)}
+            )
+            footprint_point_count += len(footprint_z)
+            roof_chunks.append(footprint_z[footprint_classes == BUILDING_CLASS])
+
+    ground = _non_empty_values(ground_chunks, "context contains no classified ground points")
+    roof = _non_empty_values(roof_chunks, "footprint contains no classified building points")
+    ground_p50 = float(np.percentile(ground, 50))
+    roof_p50, roof_p95 = np.percentile(roof, [50, 95])
+    footprint_area = sum(polygon_area(rings) for rings in polygons)
     unusable_count = histogram[12]
     usable_count = footprint_point_count - unusable_count
     return BuildingLidarSummary(

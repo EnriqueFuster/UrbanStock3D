@@ -1,6 +1,8 @@
+import argparse
+
 import pytest
 
-from scripts.process_lidar_crop import buffered_bbox
+from scripts.process_lidar_crop import buffered_bbox, http_url
 
 
 def test_buffered_bbox_expands_all_sides() -> None:
@@ -10,3 +12,8 @@ def test_buffered_bbox_expands_all_sides() -> None:
 def test_buffered_bbox_rejects_negative_distance() -> None:
     with pytest.raises(ValueError, match="non-negative"):
         buffered_bbox((10.0, 20.0, 30.0, 40.0), -1.0)
+
+
+def test_http_url_rejects_placeholder() -> None:
+    with pytest.raises(argparse.ArgumentTypeError, match="complete http"):
+        http_url("<CNIG_ASSET_DETAIL_URL>")

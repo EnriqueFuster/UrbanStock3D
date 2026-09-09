@@ -18,6 +18,7 @@ class Settings(BaseSettings):
 
     output_dir: Path = Path("outputs")
     keep_temporary: bool = False
+    roofer_executable: str = "roofer"
     http_connect_timeout_seconds: float = Field(default=10.0, gt=0)
     http_read_timeout_seconds: float = Field(default=30.0, gt=0)
     catastro_coordinate_url: AnyHttpUrl = AnyHttpUrl(

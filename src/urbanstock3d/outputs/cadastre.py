@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Any, cast
 
 from pyproj import Transformer
+from shapely import make_valid  # type: ignore[import-untyped]
+from shapely.geometry import mapping, shape  # type: ignore[import-untyped]
 
 from urbanstock3d.domain.cadastre import CadastralBuilding, CadastralBuildingPart, Footprint2D
 
@@ -67,7 +69,10 @@ def _polygon_geometry(footprint: Footprint2D) -> dict[str, Any]:
             longitude, latitude = cast(tuple[float, float], transformer.transform(x, y))
             transformed_ring.append([longitude, latitude])
         coordinates.append(transformed_ring)
-    return {"type": "Polygon", "coordinates": coordinates}
+    geometry = make_valid(shape({"type": "Polygon", "coordinates": coordinates}))
+    if geometry.geom_type not in {"Polygon", "MultiPolygon"}:
+        raise ValueError(f"Unsupported repaired footprint geometry: {geometry.geom_type}")
+    return dict(mapping(geometry))
 
 
 def _safe_directory_name(building_id: str) -> str:

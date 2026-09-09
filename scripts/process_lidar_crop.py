@@ -12,14 +12,16 @@ import httpx
 from urbanstock3d.config import Settings
 from urbanstock3d.processors.lidar import (
     inspect_lidar_header,
-    summarize_building_lidar,
     summarize_lidar_bbox,
-    write_lidar_bbox_crop,
+    summarize_multipolygon_building_lidar,
+    write_lidar_bbox_crop_from_sources,
 )
 from urbanstock3d.providers.pnoa_lidar import (
+    CnigLidarAsset,
+    discover_cnig_lidar_assets,
     download_cnig_asset,
-    footprint_bbox_utm,
-    footprint_rings_utm,
+    footprint_geometry_bbox_utm,
+    footprint_polygons_utm,
     parse_cnig_asset_page,
 )
 
@@ -27,8 +29,12 @@ from urbanstock3d.providers.pnoa_lidar import (
 def parse_arguments() -> argparse.Namespace:
     """Read the source asset, building artifact and crop options."""
     parser = argparse.ArgumentParser(description="Summarize a local PNOA-LiDAR crop.")
-    parser.add_argument("detail_url")
     parser.add_argument("building_geojson", type=Path)
+    parser.add_argument(
+        "--detail-url",
+        type=http_url,
+        help="Optional CNIG detail URL override; normally discovered automatically.",
+    )
     parser.add_argument("--buffer-m", type=float, default=25.0)
     parser.add_argument(
         "--save-crop",
@@ -37,6 +43,16 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args()
+
+
+def http_url(value: str) -> str:
+    """Reject placeholders and malformed CNIG detail URLs at the CLI boundary."""
+    url = httpx.URL(value)
+    if url.scheme not in {"http", "https"} or not url.host:
+        raise argparse.ArgumentTypeError(
+            "detail_url must be a complete http(s) URL, not a placeholder"
+        )
+    return value
 
 
 def buffered_bbox(
@@ -50,20 +66,18 @@ def buffered_bbox(
 
 
 def process_remote_crop(
-    detail_url: str,
     building_geojson: Path,
     *,
     buffer_m: float,
     output: Path,
     save_crop: Path | None = None,
+    detail_url: str | None = None,
 ) -> Path:
     """Download, crop and summarize one building context without retaining raw data."""
     building: dict[str, Any] = json.loads(building_geojson.read_text(encoding="utf-8"))
     geometry = building["geometry"]
-    if geometry["type"] != "Polygon":
-        raise ValueError("LiDAR crop currently supports Polygon buildings only")
-    building_bbox = footprint_bbox_utm(geometry["coordinates"])
-    building_rings = footprint_rings_utm(geometry["coordinates"])
+    building_bbox = footprint_geometry_bbox_utm(geometry)
+    building_polygons = footprint_polygons_utm(geometry)
     crop_bbox = buffered_bbox(building_bbox, buffer_m)
 
     settings = Settings()
@@ -76,24 +90,36 @@ def process_remote_crop(
         follow_redirects=True,
         headers={"User-Agent": "UrbanStock3D/0.1 data-audit"},
     ) as client:
-        detail_response = client.get(detail_url)
-        detail_response.raise_for_status()
-        asset = parse_cnig_asset_page(detail_response.content, detail_url)
+        assets = (
+            discover_cnig_lidar_assets(client, geometry, buffer_m=buffer_m)
+            if detail_url is None
+            else (_load_asset_override(client, detail_url),)
+        )
 
         with TemporaryDirectory(prefix="urbanstock3d-lidar-") as temporary_dir:
-            raw_path = Path(temporary_dir) / asset.filename
-            download = download_cnig_asset(client, asset, raw_path)
-            header = inspect_lidar_header(raw_path)
-            crop = summarize_lidar_bbox(raw_path, crop_bbox)
-            building_summary = summarize_building_lidar(
-                raw_path,
-                building_rings,
-                crop_bbox,
+            temporary_root = Path(temporary_dir)
+            raw_paths: list[Path] = []
+            downloads: list[dict[str, Any]] = []
+            source_headers: list[dict[str, Any]] = []
+            for asset in assets:
+                raw_path = temporary_root / asset.filename
+                download = download_cnig_asset(client, asset, raw_path)
+                raw_paths.append(raw_path)
+                downloads.append({"sequential_id": asset.sequential_id, **asdict(download)})
+                source_headers.append(
+                    {"sequential_id": asset.sequential_id, **inspect_lidar_header(raw_path)}
+                )
+
+            combined_crop_path = save_crop or temporary_root / "lidar_context_crop.laz"
+            saved_crop_point_count = write_lidar_bbox_crop_from_sources(
+                tuple(raw_paths), combined_crop_path, crop_bbox
             )
-            saved_crop_point_count = (
-                write_lidar_bbox_crop(raw_path, save_crop, crop_bbox)
-                if save_crop is not None
-                else None
+            header = inspect_lidar_header(combined_crop_path)
+            crop = summarize_lidar_bbox(combined_crop_path, crop_bbox)
+            building_summary = summarize_multipolygon_building_lidar(
+                combined_crop_path,
+                building_polygons,
+                crop_bbox,
             )
 
     report = {
@@ -101,8 +127,9 @@ def process_remote_crop(
         "product": "PNOA-LiDAR third coverage (2022-2025)",
         "status": "complete",
         "building_id": building["id"],
-        "asset": asdict(asset),
-        "download": asdict(download),
+        "assets": [asdict(asset) for asset in assets],
+        "downloads": downloads,
+        "source_headers": source_headers,
         "header": header,
         "crop": {
             "kind": "building_bbox_with_buffer",
@@ -132,7 +159,8 @@ def process_remote_crop(
                     "low_building_point_count": building_summary.building_point_count < 100,
                     "low_ground_point_count": (building_summary.context_ground_point_count < 100),
                     "usable_density_below_published_density": (
-                        building_summary.usable_point_density_m2 < asset.density_points_m2
+                        building_summary.usable_point_density_m2
+                        < min(asset.density_points_m2 for asset in assets)
                     ),
                 }.items()
                 if applies
@@ -158,15 +186,22 @@ def process_remote_crop(
     return output
 
 
+def _load_asset_override(client: httpx.Client, detail_url: str) -> CnigLidarAsset:
+    """Load an explicitly selected asset for diagnostics and reproducibility."""
+    response = client.get(detail_url)
+    response.raise_for_status()
+    return parse_cnig_asset_page(response.content, detail_url)
+
+
 def main() -> None:
     """Run the temporary LiDAR crop processor."""
     args = parse_arguments()
     report_path = process_remote_crop(
-        args.detail_url,
         args.building_geojson,
         buffer_m=args.buffer_m,
         output=args.output,
         save_crop=args.save_crop,
+        detail_url=args.detail_url,
     )
     print(f"Wrote LiDAR crop report to {report_path}")
 

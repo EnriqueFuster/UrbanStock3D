@@ -2,6 +2,7 @@
 
 import math
 import re
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
 from html import unescape
 from pathlib import Path
@@ -14,6 +15,8 @@ from pyproj import Transformer
 WGS84 = "EPSG:4326"
 PENINSULA_UTM = "EPSG:25830"
 CNIG_SEARCH_URL = "https://centrodedescargas.cnig.es/CentroDescargas/buscador.do"
+CNIG_CATALOG_BASE_URL = "https://centrodedescargas.cnig.es/CentroDescargas/"
+CNIG_LIDAR_SERIES = "LIDA3"
 GRID_SIZE_M = 1000
 
 
@@ -79,6 +82,33 @@ def footprint_rings_utm(
     )
 
 
+def footprint_polygons_utm(
+    geometry: dict[str, object],
+) -> tuple[tuple[tuple[tuple[float, float], ...], ...], ...]:
+    """Transform GeoJSON Polygon or MultiPolygon coordinates to UTM polygons."""
+    geometry_type = geometry.get("type")
+    coordinates = geometry.get("coordinates")
+    if not isinstance(coordinates, list):
+        raise ValueError("Building geometry has no coordinates")
+    if geometry_type == "Polygon":
+        polygon_coordinates = [coordinates]
+    elif geometry_type == "MultiPolygon":
+        polygon_coordinates = coordinates
+    else:
+        raise ValueError("Building geometry must be Polygon or MultiPolygon")
+    return tuple(footprint_rings_utm(polygon) for polygon in polygon_coordinates)
+
+
+def footprint_geometry_bbox_utm(
+    geometry: dict[str, object],
+) -> tuple[float, float, float, float]:
+    """Return a projected bbox for a GeoJSON Polygon or MultiPolygon."""
+    polygons = footprint_polygons_utm(geometry)
+    positions = [position for polygon in polygons for ring in polygon for position in ring]
+    xs, ys = zip(*positions, strict=True)
+    return min(xs), min(ys), max(xs), max(ys)
+
+
 def required_grid_cells(
     bbox: tuple[float, float, float, float],
     *,
@@ -106,6 +136,122 @@ def cnig_search_url(bbox_wgs84: tuple[float, float, float, float]) -> str:
     """Build an official CNIG catalogue search URL for a WGS84 bbox."""
     bbox = ",".join(f"{value:.8f}" for value in bbox_wgs84)
     return f"{CNIG_SEARCH_URL}?{urlencode({'BBOX': bbox, 'CRS': 'EPSG:4258'})}"
+
+
+def discover_cnig_lidar_asset(
+    client: httpx.Client,
+    coordinates: Sequence[object],
+) -> CnigLidarAsset:
+    """Resolve the current third-coverage LAZ at a footprint's mean position."""
+    positions = list(_iter_geojson_positions(coordinates))
+    if not positions:
+        raise ValueError("Building geometry has no coordinates")
+    longitude = sum(position[0] for position in positions) / len(positions)
+    latitude = sum(position[1] for position in positions) / len(positions)
+    return _discover_cnig_lidar_asset_at_point(client, longitude, latitude)
+
+
+def discover_cnig_lidar_assets(
+    client: httpx.Client,
+    geometry: dict[str, object],
+    *,
+    buffer_m: float = 0,
+) -> tuple[CnigLidarAsset, ...]:
+    """Resolve every third-coverage LAZ intersecting a buffered footprint bbox."""
+    cells = required_grid_cells(footprint_geometry_bbox_utm(geometry), buffer_m=buffer_m)
+    to_wgs84 = Transformer.from_crs(PENINSULA_UTM, WGS84, always_xy=True)
+    assets: list[CnigLidarAsset] = []
+    for cell in cells:
+        center_x = (cell.easting_km + 0.5) * GRID_SIZE_M
+        center_y = (cell.northing_km + 0.5) * GRID_SIZE_M
+        longitude, latitude = to_wgs84.transform(center_x, center_y)
+        asset = _discover_cnig_lidar_asset_at_point(client, longitude, latitude)
+        if asset.grid_cell != cell.identifier:
+            raise ValueError(
+                f"CNIG returned grid cell {asset.grid_cell}, expected {cell.identifier}"
+            )
+        assets.append(asset)
+    return tuple(dict.fromkeys(assets))
+
+
+def _discover_cnig_lidar_asset_at_point(
+    client: httpx.Client,
+    longitude: float,
+    latitude: float,
+) -> CnigLidarAsset:
+    """Resolve one current third-coverage LAZ at a WGS84 point."""
+    point = (
+        '{"type":"FeatureCollection","features":[{"type":"Feature",'
+        f'"geometry":{{"type":"Point","coordinates":[{longitude},{latitude}]}}}}]}}'
+    )
+    search_data = {
+        "lon": str(longitude),
+        "lat": str(latitude),
+        "series": CNIG_LIDAR_SERIES,
+        "codSerie": CNIG_LIDAR_SERIES,
+        "coordenadas": point,
+        "codAgr": "MOMDT",
+    }
+    catalogue_url = f"{CNIG_CATALOG_BASE_URL}buscadorCatalogo.do?codFamilia=LIDAR"
+    client.get(catalogue_url).raise_for_status()
+    client.post(
+        f"{CNIG_CATALOG_BASE_URL}resultados-busqueda-visor",
+        data=search_data,
+    ).raise_for_status()
+    listing_response = client.get(
+        f"{CNIG_CATALOG_BASE_URL}archivosTotalesSerieVisor",
+        params={
+            "numPagina": "1",
+            "codAgr": "MOMDT",
+            "codSerie": CNIG_LIDAR_SERIES,
+            "coordenadas": point,
+        },
+    )
+    listing_response.raise_for_status()
+    filename, sequential_id = parse_cnig_lidar_listing(listing_response.text)
+    detail_url = f"{CNIG_CATALOG_BASE_URL}detalleArchivo?sec={sequential_id}"
+    detail_response = client.get(detail_url)
+    detail_response.raise_for_status()
+    asset = parse_cnig_asset_page(detail_response.content, detail_url)
+    normalized_listing_name = re.sub(r"[^a-z0-9]", "", filename.casefold())
+    normalized_detail_name = re.sub(r"[^a-z0-9]", "", asset.filename.casefold())
+    if normalized_detail_name != normalized_listing_name:
+        raise ValueError("CNIG listing and detail page identify different LiDAR assets")
+    return asset
+
+
+def _iter_geojson_positions(coordinates: Sequence[object]) -> Iterator[tuple[float, float]]:
+    for item in coordinates:
+        if (
+            isinstance(item, list)
+            and len(item) >= 2
+            and isinstance(item[0], int | float)
+            and isinstance(item[1], int | float)
+        ):
+            yield float(item[0]), float(item[1])
+        elif isinstance(item, list):
+            yield from _iter_geojson_positions(item)
+
+
+def parse_cnig_lidar_listing(content: str) -> tuple[str, str]:
+    """Extract the unique third-coverage LAZ and detail identifier from a listing."""
+    rows = re.findall(r"<tr\b[^>]*>(.*?)</tr>", content, flags=re.IGNORECASE | re.DOTALL)
+    assets: list[tuple[str, str]] = []
+    for row in rows:
+        filename_match = re.search(
+            r"(PNOA[-_]\d{4}[-_][A-Z]+[-_]\d+-\d+[-_]H\d+[-_]NPC\d+\.laz)",
+            row,
+            flags=re.IGNORECASE,
+        )
+        detail_match = re.search(r"detalleArchivo\?sec=(\d+)", row, flags=re.IGNORECASE)
+        if filename_match is not None and detail_match is not None:
+            assets.append((filename_match.group(1), detail_match.group(1)))
+    unique_assets = list(dict.fromkeys(assets))
+    if len(unique_assets) != 1:
+        raise ValueError(
+            f"Expected exactly one third-coverage CNIG LiDAR asset, found {len(unique_assets)}"
+        )
+    return unique_assets[0]
 
 
 def parse_cnig_asset_page(content: bytes, detail_url: str) -> CnigLidarAsset:

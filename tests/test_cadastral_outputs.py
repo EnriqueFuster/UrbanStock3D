@@ -80,3 +80,23 @@ def test_parts_are_written_as_individual_features(
     assert collection["type"] == "FeatureCollection"
     assert len(collection["features"]) == 1
     assert collection["features"][0]["properties"]["floors_above_ground"] == 10
+
+
+def test_disjoint_rings_are_exported_as_valid_multipolygon(
+    building: CadastralBuilding,
+    tmp_path: Path,
+) -> None:
+    disjoint_footprint = Footprint2D(
+        crs="EPSG:25830",
+        rings=(
+            ((0, 0), (10, 0), (10, 10), (0, 0)),
+            ((20, 20), (25, 20), (25, 25), (20, 20)),
+        ),
+    )
+    repaired = building.model_copy(update={"footprint": disjoint_footprint})
+
+    building_dir = write_cadastral_artifacts(repaired, tmp_path)
+    geojson = json.loads((building_dir / "building.geojson").read_text(encoding="utf-8"))
+
+    assert geojson["geometry"]["type"] == "MultiPolygon"
+    assert len(geojson["geometry"]["coordinates"]) == 2

@@ -11,6 +11,7 @@ from urbanstock3d.processors.lidar import (
     summarize_building_lidar,
     summarize_lidar_bbox,
     write_lidar_bbox_crop,
+    write_lidar_bbox_crop_from_sources,
 )
 
 
@@ -86,6 +87,27 @@ def test_write_lidar_bbox_crop_preserves_selected_points(tmp_path: Path) -> None
     assert crop.header.point_format.id == 8
     assert np.asarray(crop.classification).tolist() == [2, 6]
     assert np.asarray(crop.red).tolist() == [100, 200]
+
+
+def test_crop_from_sources_merges_tiles_with_different_offsets(tmp_path: Path) -> None:
+    sources = []
+    for index, offset in enumerate((0.0, 1000.0)):
+        header = laspy.LasHeader(point_format=6, version="1.4")
+        header.offsets = np.array([offset, offset, 0.0])
+        points = laspy.LasData(header)
+        points.x = np.array([5.0 + index * 10, 100.0 + index * 1000])
+        points.y = np.array([5.0, 100.0 + index * 1000])
+        points.z = np.array([10.0, 20.0])
+        source = tmp_path / f"tile-{index}.las"
+        points.write(source)
+        sources.append(source)
+
+    destination = tmp_path / "combined.laz"
+    count = write_lidar_bbox_crop_from_sources(tuple(sources), destination, (0.0, 0.0, 20.0, 20.0))
+
+    crop = laspy.read(destination)
+    assert count == 2
+    assert np.asarray(crop.x).tolist() == pytest.approx([5.0, 15.0])
 
 
 def test_points_in_polygon_excludes_hole() -> None:
