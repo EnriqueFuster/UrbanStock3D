@@ -1,9 +1,11 @@
 import json
 from pathlib import Path
 
+import laspy
+import numpy as np
 import pytest
 
-from urbanstock3d.reconstruction.validation import validate_cityjsonseq
+from urbanstock3d.reconstruction.validation import assess_cityjson_lidar_fit, validate_cityjsonseq
 
 FOOTPRINT = ((((0.0, 0.0), (10.0, 0.0), (10.0, 8.0), (0.0, 8.0), (0.0, 0.0)),),)
 
@@ -99,3 +101,24 @@ def test_rejects_model_that_does_not_align_with_source_footprint(tmp_path: Path)
 
     assert not report.plausibility_pass
     assert report.footprint_bbox_iou == 0.0
+
+
+def test_measures_independent_point_to_roof_distances(tmp_path: Path) -> None:
+    model = tmp_path / "cube.city.jsonl"
+    lidar = tmp_path / "roof.las"
+    write_cube(model)
+    header = laspy.LasHeader(point_format=6, version="1.4")
+    cloud = laspy.LasData(header)
+    cloud.x = np.array([2.0, 4.0, 6.0, 8.0])
+    cloud.y = np.array([2.0, 4.0, 6.0, 7.0])
+    cloud.z = np.array([10.0, 10.2, 9.8, 11.0])
+    cloud.classification = np.full(4, 6, dtype=np.uint8)
+    cloud.write(lidar)
+
+    report = assess_cityjson_lidar_fit(model, lidar, FOOTPRINT)
+
+    assert report.source_roof_point_count == 4
+    assert report.roof_triangle_count == 2
+    assert report.distance_rmse_m == pytest.approx(np.sqrt(1.08 / 4))
+    assert report.distance_p95_m == pytest.approx(0.88)
+    assert report.within_020m_ratio == pytest.approx(0.75)
