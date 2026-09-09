@@ -11,6 +11,7 @@ from urbanstock3d.reconstruction.models import (
     GeometryProvenance,
     LidarQualityReport,
     ReconstructionEvidence,
+    ReconstructionPlan,
     ReconstructionRequest,
     ReconstructionResult,
 )
@@ -22,6 +23,7 @@ __all__ = [
     "LidarQualityReport",
     "ReconstructionEvidence",
     "ReconstructionPolicy",
+    "ReconstructionPlan",
     "ReconstructionPriority",
     "ReconstructionRequest",
     "ReconstructionResult",

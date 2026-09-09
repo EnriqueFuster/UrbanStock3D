@@ -59,6 +59,25 @@ class ReconstructionEvidence:
 
 
 @dataclass(frozen=True)
+class ReconstructionPlan:
+    """One pre-reconstruction decision, or an explicit abstention."""
+
+    requested_lod: LodRequest
+    target_lod: LodRequest | None
+    requested_backend: BackendName
+    selected_backend: BackendName | None
+    selected_profile: str | None
+    fallback_lod: LodRequest | None
+    reasons: tuple[str, ...]
+    warnings: tuple[str, ...] = ()
+    forced: bool = False
+
+    @property
+    def executable(self) -> bool:
+        return self.target_lod is not None and self.selected_backend is not None
+
+
+@dataclass(frozen=True)
 class LidarQualityReport:
     """Measured pre-reconstruction quality of building-level LiDAR evidence."""
 
