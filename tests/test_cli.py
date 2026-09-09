@@ -13,6 +13,47 @@ def test_cli_displays_help() -> None:
 
     assert result.exit_code == 0
     assert "resolve" in result.stdout
+    assert "reconstruct" in result.stdout
+
+
+def test_reconstruction_plan_validates_and_serializes_request() -> None:
+    result = runner.invoke(
+        app,
+        [
+            "reconstruct",
+            "plan",
+            "--refcat",
+            "4531917YJ2743B",
+            "--lod",
+            "2.2",
+            "--backend",
+            "roofer",
+            "--policy",
+            "strict",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"status": "request_validated"' in result.stdout
+    assert '"lod": "2.2"' in result.stdout
+    assert '"backend": "roofer"' in result.stdout
+
+
+def test_reconstruction_plan_rejects_implicit_experimental_backend() -> None:
+    result = runner.invoke(
+        app,
+        [
+            "reconstruct",
+            "plan",
+            "--refcat",
+            "4531917YJ2743B",
+            "--policy",
+            "force_experimental",
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "requires an explicit backend" in result.stderr
 
 
 def test_build_query_accepts_refcat() -> None:

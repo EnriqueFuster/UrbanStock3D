@@ -5,6 +5,13 @@ from pathlib import Path
 from pydantic import AnyHttpUrl, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from urbanstock3d.reconstruction.enums import (
+    BackendName,
+    LodRequest,
+    ReconstructionPolicy,
+    ReconstructionPriority,
+)
+
 
 class Settings(BaseSettings):
     """Runtime settings with safe, portable defaults."""
@@ -30,3 +37,7 @@ class Settings(BaseSettings):
     )
     pnoa_wms_url: AnyHttpUrl = AnyHttpUrl("https://www.ign.es/wms-inspire/pnoa-ma")
     pnoa_wms_layer: str = "OI.OrthoimageCoverage"
+    reconstruction_lod: LodRequest = LodRequest.AUTO
+    reconstruction_backend: BackendName = BackendName.AUTO
+    reconstruction_policy: ReconstructionPolicy = ReconstructionPolicy.FALLBACK
+    reconstruction_priority: ReconstructionPriority = ReconstructionPriority.BALANCED
