@@ -100,3 +100,20 @@ def save_normalized_height_raster(
         terrain_source=np.array(raster.terrain_source),
     )
     return destination
+
+
+def load_normalized_height_raster(source: Path) -> NormalizedHeightRaster:
+    """Load a persisted ground-normalized height raster."""
+    with np.load(source) as data:
+        origin = data["origin"]
+        return NormalizedHeightRaster(
+            height_m=data["height_m"],
+            terrain_elevation_m=data["terrain_elevation_m"],
+            footprint_mask=data["footprint_mask"],
+            valid_mask=data["valid_mask"],
+            origin_x=float(origin[0]),
+            origin_y=float(origin[1]),
+            resolution_m=float(data["resolution_m"]),
+            crs=str(data["crs"]),
+            terrain_source=str(data["terrain_source"]),
+        )
