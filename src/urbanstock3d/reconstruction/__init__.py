@@ -9,6 +9,7 @@ from urbanstock3d.reconstruction.enums import (
 )
 from urbanstock3d.reconstruction.models import (
     GeometryProvenance,
+    LidarQualityReport,
     ReconstructionEvidence,
     ReconstructionRequest,
     ReconstructionResult,
@@ -18,6 +19,7 @@ __all__ = [
     "BackendName",
     "GeometryProvenance",
     "LodRequest",
+    "LidarQualityReport",
     "ReconstructionEvidence",
     "ReconstructionPolicy",
     "ReconstructionPriority",

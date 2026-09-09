@@ -59,6 +59,31 @@ class ReconstructionEvidence:
 
 
 @dataclass(frozen=True)
+class LidarQualityReport:
+    """Measured pre-reconstruction quality of building-level LiDAR evidence."""
+
+    available: bool
+    point_count: int
+    roof_point_count: int
+    density_all_per_m2: float | None
+    density_roof_per_m2: float | None
+    coverage_050m: float | None
+    coverage_100m: float | None
+    largest_hole_ratio: float | None
+    nn_spacing_median_m: float | None
+    nn_spacing_p90_m: float | None
+    planar_support_ratio: float | None
+    local_residual_median_m: float | None
+    outlier_ratio: float | None
+    footprint_alignment_score: float | None
+    estimated_shift_x_m: float | None
+    estimated_shift_y_m: float | None
+    quality_class: str
+    score: float
+    warnings: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
 class GeometryProvenance:
     """Declare which evidence contributed to delivered geometry."""
 
