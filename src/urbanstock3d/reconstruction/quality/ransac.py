@@ -70,6 +70,14 @@ class RoofPlaneEvidence:
         return asdict(self)
 
 
+def roof_plane_evidence_from_dict(payload: dict[str, Any]) -> RoofPlaneEvidence:
+    """Restore plane evidence from its JSON-compatible representation."""
+    values = dict(payload)
+    values["planes"] = tuple(PreliminaryPlane(**plane) for plane in values["planes"])
+    values["warnings"] = tuple(values.get("warnings", ()))
+    return RoofPlaneEvidence(**values)
+
+
 def assess_roof_planes(
     path: Path,
     footprint: Footprint,
