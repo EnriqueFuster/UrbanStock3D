@@ -3,6 +3,7 @@
 from dataclasses import asdict, dataclass
 from enum import StrEnum
 from math import hypot, pi
+from typing import Any
 
 import numpy as np
 
@@ -91,6 +92,14 @@ class RoofComplexityReport:
         payload = asdict(self)
         payload["complexity_class"] = self.complexity_class.value
         return payload
+
+
+def roof_complexity_report_from_dict(payload: dict[str, Any]) -> RoofComplexityReport:
+    """Restore a complexity report from its JSON-compatible representation."""
+    values = dict(payload)
+    values["complexity_class"] = RoofComplexityClass(str(values["complexity_class"]))
+    values["reasons"] = tuple(values.get("reasons", ()))
+    return RoofComplexityReport(**values)
 
 
 def assess_roof_complexity(
