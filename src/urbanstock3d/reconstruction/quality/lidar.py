@@ -32,12 +32,36 @@ class CoverageGrid:
         return float(np.count_nonzero(self.occupied_mask & self.footprint_mask) / valid_cells)
 
 
+@dataclass(frozen=True)
+class LidarQualityParameters:
+    """Explicit tunables for bounded pre-reconstruction LiDAR analysis."""
+
+    pca_sample_size: int = 2_000
+    pca_neighbours: int = 16
+    planar_residual_max_m: float = 0.20
+    planarity_min: float = 0.30
+
+    def __post_init__(self) -> None:
+        if self.pca_sample_size <= 0:
+            raise ValueError("PCA sample size must be positive")
+        if self.pca_neighbours < 3:
+            raise ValueError("PCA requires at least three neighbours")
+        if self.planar_residual_max_m <= 0:
+            raise ValueError("Planar residual threshold must be positive")
+        if not 0 <= self.planarity_min <= 1:
+            raise ValueError("Minimum planarity must be between zero and one")
+
+
 def assess_lidar_quality(
-    path: Path, footprint: Footprint
+    path: Path,
+    footprint: Footprint,
+    *,
+    parameters: LidarQualityParameters | None = None,
 ) -> tuple[LidarQualityReport, CoverageGrid]:
     """Measure spatial support without modifying or filtering source points."""
     if not footprint:
         raise ValueError("LiDAR quality assessment requires a footprint")
+    parameters = parameters or LidarQualityParameters()
     cloud = laspy.read(path)
     x = np.asarray(cloud.x)
     y = np.asarray(cloud.y)
@@ -49,13 +73,17 @@ def assess_lidar_quality(
     grid_050 = rasterize_coverage(x[roof], y[roof], footprint, resolution_m=0.5)
     grid_100 = rasterize_coverage(x[roof], y[roof], footprint, resolution_m=1.0)
     spacing_median, spacing_p90 = _nearest_neighbour_spacing(x[roof], y[roof])
+    planar_support, local_residual = local_planar_support(
+        np.column_stack((x[roof], y[roof], z[roof])),
+        parameters,
+    )
     outlier_ratio = _robust_elevation_outlier_ratio(z[roof])
     alignment_score, shift_x, shift_y = _estimate_alignment(
         x[classification == BUILDING_CLASS],
         y[classification == BUILDING_CLASS],
         footprint,
     )
-    warnings: list[str] = ["planar support metrics are pending the bounded PCA/RANSAC step"]
+    warnings: list[str] = []
     if np.count_nonzero(roof) == 0:
         warnings.append("no classified building points inside footprint")
     if shift_x is not None and shift_y is not None and max(abs(shift_x), abs(shift_y)) == 2.0:
@@ -71,8 +99,8 @@ def assess_lidar_quality(
         largest_hole_ratio=_largest_empty_component_ratio(grid_100),
         nn_spacing_median_m=spacing_median,
         nn_spacing_p90_m=spacing_p90,
-        planar_support_ratio=None,
-        local_residual_median_m=None,
+        planar_support_ratio=planar_support,
+        local_residual_median_m=local_residual,
         outlier_ratio=outlier_ratio,
         footprint_alignment_score=alignment_score,
         estimated_shift_x_m=shift_x,
@@ -175,6 +203,39 @@ def _robust_elevation_outlier_ratio(
         return float(np.count_nonzero(z != median) / len(z))
     robust_z = np.abs(z - median) / (1.4826 * mad)
     return float(np.count_nonzero(robust_z > 6.0) / len(z))
+
+
+def local_planar_support(
+    points: np.ndarray[Any, np.dtype[np.floating[Any]]],
+    parameters: LidarQualityParameters,
+) -> tuple[float | None, float | None]:
+    """Estimate local surface planarity from bounded k-neighbourhood PCA."""
+    if len(points) < 3:
+        return None, None
+    sample_size = min(len(points), parameters.pca_sample_size)
+    if sample_size == len(points):
+        sample_indices = np.arange(len(points))
+    else:
+        sample_indices = np.random.default_rng(42).choice(len(points), sample_size, replace=False)
+    neighbours = min(parameters.pca_neighbours, len(points))
+    tree = cKDTree(points)
+    _, neighbour_indices = tree.query(points[sample_indices], k=neighbours)
+    neighbourhoods = points[neighbour_indices]
+    centered = neighbourhoods - neighbourhoods.mean(axis=1, keepdims=True)
+    covariance = np.einsum("nki,nkj->nij", centered, centered) / neighbours
+    eigenvalues = np.linalg.eigvalsh(covariance)
+    largest = eigenvalues[:, 2]
+    planarity = np.divide(
+        eigenvalues[:, 1] - eigenvalues[:, 0],
+        largest,
+        out=np.zeros_like(largest),
+        where=largest > 0,
+    )
+    residuals = np.sqrt(np.maximum(eigenvalues[:, 0], 0.0))
+    supported = (residuals <= parameters.planar_residual_max_m) & (
+        planarity >= parameters.planarity_min
+    )
+    return float(np.mean(supported)), float(np.median(residuals))
 
 
 def _estimate_alignment(

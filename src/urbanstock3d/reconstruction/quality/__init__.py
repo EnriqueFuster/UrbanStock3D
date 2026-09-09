@@ -1,5 +1,9 @@
 """Pre-reconstruction evidence quality assessment."""
 
-from urbanstock3d.reconstruction.quality.lidar import assess_lidar_quality
+from urbanstock3d.reconstruction.quality.lidar import (
+    LidarQualityParameters,
+    assess_lidar_quality,
+    local_planar_support,
+)
 
-__all__ = ["assess_lidar_quality"]
+__all__ = ["LidarQualityParameters", "assess_lidar_quality", "local_planar_support"]

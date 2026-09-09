@@ -5,7 +5,9 @@ import numpy as np
 import pytest
 
 from urbanstock3d.reconstruction.quality.lidar import (
+    LidarQualityParameters,
     assess_lidar_quality,
+    local_planar_support,
     rasterize_coverage,
 )
 
@@ -44,3 +46,29 @@ def test_coverage_rejects_non_positive_resolution() -> None:
             FOOTPRINT,
             resolution_m=0,
         )
+
+
+def test_local_pca_detects_planar_support_and_vertical_noise() -> None:
+    x, y = np.meshgrid(np.arange(6, dtype=float), np.arange(6, dtype=float))
+    planar = np.column_stack((x.ravel(), y.ravel(), 0.2 * x.ravel() + 0.1 * y.ravel()))
+    noisy = planar.copy()
+    noisy[::2, 2] += np.linspace(-2.0, 2.0, len(noisy[::2]))
+    parameters = LidarQualityParameters(
+        pca_sample_size=len(planar),
+        pca_neighbours=9,
+        planar_residual_max_m=0.08,
+        planarity_min=0.15,
+    )
+
+    planar_support, planar_residual = local_planar_support(planar, parameters)
+    noisy_support, noisy_residual = local_planar_support(noisy, parameters)
+
+    assert planar_support is not None and planar_support > 0.9
+    assert planar_residual is not None and planar_residual < 0.01
+    assert noisy_support is not None and noisy_support < planar_support
+    assert noisy_residual is not None and noisy_residual > planar_residual
+
+
+def test_lidar_quality_parameters_reject_invalid_neighbourhood() -> None:
+    with pytest.raises(ValueError, match="at least three"):
+        LidarQualityParameters(pca_neighbours=2)
