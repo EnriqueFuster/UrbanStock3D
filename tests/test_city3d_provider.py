@@ -25,7 +25,7 @@ def test_city3d_client_builds_wrapper_command(tmp_path: Path) -> None:
     runtime_directory.mkdir()
     with patch("urbanstock3d.providers.city3d.subprocess.run", side_effect=completed) as run:
         result = City3DClient(str(executable), runtime_directory=runtime_directory).reconstruct(
-            point_cloud, footprint, output
+            point_cloud, footprint, output, ground_elevation_m=18.125
         )
 
     command = run.call_args.args[0]
@@ -34,6 +34,7 @@ def test_city3d_client_builds_wrapper_command(tmp_path: Path) -> None:
         str(point_cloud.resolve()),
         str(footprint.resolve()),
         str(output.resolve()),
+        "18.125",
     )
     assert result.output_file == output
     assert run.call_args.kwargs["env"]["PATH"].startswith(str(runtime_directory.resolve()))
@@ -52,7 +53,9 @@ def test_city3d_client_reports_process_failure(tmp_path: Path) -> None:
         patch("urbanstock3d.providers.city3d.subprocess.run", return_value=process),
         pytest.raises(City3DExecutionError, match="solver failed"),
     ):
-        City3DClient(str(executable)).reconstruct(point_cloud, footprint, tmp_path / "result.obj")
+        City3DClient(str(executable)).reconstruct(
+            point_cloud, footprint, tmp_path / "result.obj", ground_elevation_m=18.0
+        )
 
 
 def test_city3d_client_requires_output_artifact(tmp_path: Path) -> None:
@@ -68,4 +71,6 @@ def test_city3d_client_requires_output_artifact(tmp_path: Path) -> None:
         patch("urbanstock3d.providers.city3d.subprocess.run", return_value=process),
         pytest.raises(City3DExecutionError, match="without producing"),
     ):
-        City3DClient(str(executable)).reconstruct(point_cloud, footprint, tmp_path / "missing.obj")
+        City3DClient(str(executable)).reconstruct(
+            point_cloud, footprint, tmp_path / "missing.obj", ground_elevation_m=18.0
+        )

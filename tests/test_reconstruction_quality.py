@@ -27,7 +27,7 @@ GEOMETRY = CityJsonQualityReport(
     (),
     (),
 )
-FIT = LidarFitReport(1_000, 1_000, 2, 0.1, 0.2, 0.4, 0.8, 0.95, 0.99)
+FIT = LidarFitReport(1_000, 900, 900, 2, 0.1, 0.2, 0.4, 0.8, 0.95, 0.99)
 
 
 def test_accepts_high_confidence_geometry_and_lidar_fit() -> None:

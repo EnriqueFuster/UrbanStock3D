@@ -19,7 +19,7 @@ def parse_arguments() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_arguments()
-    assess_city3d_inputs(args.point_cloud, args.footprint)
+    assessment = assess_city3d_inputs(args.point_cloud, args.footprint)
     run = City3DClient(
         args.executable,
         runtime_directory=args.runtime_directory,
@@ -27,6 +27,7 @@ def main() -> None:
         args.point_cloud,
         args.footprint,
         args.output,
+        ground_elevation_m=assessment.ground_elevation_m,
     )
     print(f"Wrote City3D OBJ to {run.output_file}")
 

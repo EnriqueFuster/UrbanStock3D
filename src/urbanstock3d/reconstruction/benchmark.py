@@ -6,6 +6,7 @@ from urbanstock3d.reconstruction.enums import BackendName
 from urbanstock3d.reconstruction.validation import (
     CityJsonQualityReport,
     LidarFitReport,
+    ObjQualityReport,
     ReconstructionQualityReport,
 )
 
@@ -50,7 +51,7 @@ class ReconstructionBenchmarkReport:
 
 def build_benchmark_entry(
     backend: BackendName,
-    geometry: CityJsonQualityReport,
+    geometry: CityJsonQualityReport | ObjQualityReport,
     lidar_fit: LidarFitReport,
     quality: ReconstructionQualityReport,
 ) -> ReconstructionBenchmarkEntry:

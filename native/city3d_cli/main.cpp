@@ -11,8 +11,8 @@
 #include <string>
 
 int main(int argc, char** argv) {
-    if (argc != 4) {
-        std::cerr << "usage: urbanstock-city3d POINT_CLOUD FOOTPRINT OUTPUT_OBJ\n";
+    if (argc != 5) {
+        std::cerr << "usage: urbanstock-city3d POINT_CLOUD FOOTPRINT OUTPUT_OBJ GROUND_Z\n";
         return EXIT_FAILURE;
     }
 
@@ -21,6 +21,7 @@ int main(int argc, char** argv) {
     const std::string input_cloud_file = argv[1];
     const std::string input_footprint_file = argv[2];
     const std::string output_file = argv[3];
+    const double ground_elevation = std::stod(argv[4]);
 
     PointSet* point_set = PointSetIO::read(input_cloud_file);
     if (!point_set) {
@@ -30,7 +31,7 @@ int main(int argc, char** argv) {
     const vec3& offset = point_set->offset();
     Map* footprint = MapIO::read(
         input_footprint_file,
-        vec3(offset.x, offset.y, -point_set->bbox().z_min())
+        vec3(offset.x, offset.y, offset.z - ground_elevation)
     );
     if (!footprint) {
         std::cerr << "failed to load footprint: " << input_footprint_file << '\n';

@@ -8,8 +8,10 @@ from typing import Any
 from urbanstock3d.providers.pnoa_lidar import footprint_polygons_utm
 from urbanstock3d.reconstruction.validation import (
     assess_cityjson_lidar_fit,
+    assess_obj_lidar_fit,
     evaluate_reconstruction_quality,
     validate_cityjsonseq,
+    validate_obj,
 )
 
 
@@ -33,9 +35,18 @@ def build_report(
 ) -> Path:
     building: dict[str, Any] = json.loads(building_path.read_text(encoding="utf-8"))
     footprint = footprint_polygons_utm(building["geometry"])
-    report = validate_cityjsonseq(model, footprint, lod=lod)
+    is_obj = model.suffix.lower() == ".obj"
+    report = (
+        validate_obj(model, footprint)
+        if is_obj
+        else validate_cityjsonseq(model, footprint, lod=lod)
+    )
     lidar_fit = (
-        assess_cityjson_lidar_fit(model, lidar_path, footprint, lod=lod)
+        (
+            assess_obj_lidar_fit(model, lidar_path, footprint)
+            if is_obj
+            else assess_cityjson_lidar_fit(model, lidar_path, footprint, lod=lod)
+        )
         if lidar_path is not None
         else None
     )

@@ -5,6 +5,7 @@ from enum import StrEnum
 
 from urbanstock3d.reconstruction.validation.cityjson import CityJsonQualityReport
 from urbanstock3d.reconstruction.validation.lidar_fit import LidarFitReport
+from urbanstock3d.reconstruction.validation.obj import ObjQualityReport
 
 
 class QualityConfidence(StrEnum):
@@ -61,7 +62,7 @@ class ReconstructionQualityReport:
 
 
 def evaluate_reconstruction_quality(
-    geometry: CityJsonQualityReport,
+    geometry: CityJsonQualityReport | ObjQualityReport,
     lidar_fit: LidarFitReport,
     *,
     parameters: ReconstructionQualityParameters | None = None,

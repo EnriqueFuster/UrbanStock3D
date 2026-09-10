@@ -10,6 +10,10 @@ import numpy as np
 from urbanstock3d.formats.cityjson import lod_surfaces, read_cityjsonseq, transformed_vertices
 from urbanstock3d.processors.lidar import BUILDING_CLASS, points_in_polygon
 from urbanstock3d.reconstruction.quality.lidar import Footprint
+from urbanstock3d.reconstruction.validation.roof_observations import (
+    RoofObservationParameters,
+    select_roof_observations,
+)
 
 
 @dataclass(frozen=True)
@@ -18,6 +22,7 @@ class LidarFitParameters:
 
     sample_size: int = 5_000
     random_seed: int = 42
+    observations: RoofObservationParameters = RoofObservationParameters()
 
     def __post_init__(self) -> None:
         if self.sample_size <= 0:
@@ -29,6 +34,7 @@ class LidarFitReport:
     """Distances from observed roof observations to reconstructed roof triangles."""
 
     source_roof_point_count: int
+    selected_roof_point_count: int
     sampled_roof_point_count: int
     roof_triangle_count: int
     distance_median_m: float
@@ -70,14 +76,16 @@ def assess_cityjson_lidar_fit(
     source_count = len(points)
     if source_count == 0:
         raise ValueError("No classified roof points exist inside the footprint")
-    if source_count > parameters.sample_size:
+    selected, selection = select_roof_observations(points, parameters=parameters.observations)
+    points = points[selected]
+    if len(points) > parameters.sample_size:
         indices = np.random.default_rng(parameters.random_seed).choice(
-            source_count, parameters.sample_size, replace=False
+            len(points), parameters.sample_size, replace=False
         )
         points = points[indices]
     distances = np.array(
         [
-            min(_point_triangle_distance(point, triangle) for triangle in triangles)
+            min(point_triangle_distance(point, triangle) for triangle in triangles)
             for point in points
         ]
     )
@@ -86,6 +94,7 @@ def assess_cityjson_lidar_fit(
     )
     return LidarFitReport(
         source_roof_point_count=source_count,
+        selected_roof_point_count=selection.selected_point_count,
         sampled_roof_point_count=len(points),
         roof_triangle_count=len(triangles),
         distance_median_m=float(np.median(distances)),
@@ -94,7 +103,11 @@ def assess_cityjson_lidar_fit(
         within_020m_ratio=_within_ratio(distances, 0.2),
         within_050m_ratio=_within_ratio(distances, 0.5),
         within_100m_ratio=_within_ratio(distances, 1.0),
-        warnings=warnings,
+        warnings=(
+            *warnings,
+            f"roof observations selected with {selection.method}: "
+            f"{selection.selected_point_count}/{selection.source_point_count}",
+        ),
     )
 
 
@@ -126,7 +139,7 @@ def _roof_triangles(
     return triangles, used_fan
 
 
-def _point_triangle_distance(
+def point_triangle_distance(
     point: np.ndarray[Any, np.dtype[np.floating[Any]]],
     triangle: np.ndarray[Any, np.dtype[np.float64]],
 ) -> float:

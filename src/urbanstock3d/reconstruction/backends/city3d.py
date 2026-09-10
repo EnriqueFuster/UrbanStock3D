@@ -6,8 +6,10 @@ from pathlib import Path
 from typing import Any, Protocol
 
 import laspy
+import numpy as np
 
 from urbanstock3d.errors import City3DExecutionError
+from urbanstock3d.processors.lidar import GROUND_CLASS
 from urbanstock3d.providers.city3d import City3DRun
 from urbanstock3d.reconstruction.backends.base import BackendCapabilities
 from urbanstock3d.reconstruction.enums import BackendName, LodRequest, ReconstructionStatus
@@ -21,7 +23,14 @@ from urbanstock3d.reconstruction.models import (
 class City3DRunner(Protocol):
     """Narrow native-client interface required by the backend adapter."""
 
-    def reconstruct(self, point_cloud: Path, footprint: Path, output_file: Path) -> City3DRun: ...
+    def reconstruct(
+        self,
+        point_cloud: Path,
+        footprint: Path,
+        output_file: Path,
+        *,
+        ground_elevation_m: float,
+    ) -> City3DRun: ...
 
 
 @dataclass(frozen=True)
@@ -33,6 +42,7 @@ class City3DInputAssessment:
     point_count: int
     epsg: int
     footprint_vertex_count: int
+    ground_elevation_m: float
 
     def to_dict(self) -> dict[str, object]:
         payload = asdict(self)
@@ -74,9 +84,14 @@ class City3DBackend:
         if not isinstance(evidence.lidar_points, Path) or not isinstance(evidence.footprint, Path):
             raise TypeError("City3D evidence must contain pathlib.Path inputs")
         try:
-            assess_city3d_inputs(evidence.lidar_points, evidence.footprint)
             output_file = self.output_root / evidence.building_id / "city3d.obj"
-            run = self.client.reconstruct(evidence.lidar_points, evidence.footprint, output_file)
+            assessment = assess_city3d_inputs(evidence.lidar_points, evidence.footprint)
+            run = self.client.reconstruct(
+                evidence.lidar_points,
+                evidence.footprint,
+                output_file,
+                ground_elevation_m=assessment.ground_elevation_m,
+            )
         except (City3DExecutionError, OSError, ValueError) as error:
             return ReconstructionResult(
                 status=ReconstructionStatus.FAILED,
@@ -108,14 +123,22 @@ def assess_city3d_inputs(point_cloud: Path, footprint: Path) -> City3DInputAsses
     if not footprint.is_file():
         raise FileNotFoundError(footprint)
 
+    ground_chunks: list[np.ndarray[Any, np.dtype[np.floating[Any]]]] = []
     with laspy.open(point_cloud) as reader:
         point_count = reader.header.point_count
         crs = reader.header.parse_crs()
+        for points in reader.chunk_iterator(1_000_000):
+            classification = np.asarray(points.classification, dtype=np.uint8)
+            ground_chunks.append(np.asarray(points.z)[classification == GROUND_CLASS])
     if point_count == 0:
         raise ValueError("City3D point cloud cannot be empty")
     epsg = crs.to_epsg() if crs is not None else None
     if epsg != 25830:
         raise ValueError("City3D inputs must use EPSG:25830")
+    non_empty_ground = [chunk for chunk in ground_chunks if len(chunk)]
+    if not non_empty_ground:
+        raise ValueError("City3D point cloud contains no classified ground points")
+    ground = np.concatenate(non_empty_ground)
 
     collection: dict[str, Any] = json.loads(footprint.read_text(encoding="utf-8"))
     crs_name = str(collection.get("crs", {}).get("properties", {}).get("name", ""))
@@ -140,4 +163,5 @@ def assess_city3d_inputs(point_cloud: Path, footprint: Path) -> City3DInputAsses
         point_count=point_count,
         epsg=epsg,
         footprint_vertex_count=len(exterior) - 1,
+        ground_elevation_m=float(np.median(ground)),
     )

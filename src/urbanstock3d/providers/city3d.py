@@ -39,7 +39,14 @@ class City3DClient:
             )
         self.runtime_directory = runtime_directory
 
-    def reconstruct(self, point_cloud: Path, footprint: Path, output_file: Path) -> City3DRun:
+    def reconstruct(
+        self,
+        point_cloud: Path,
+        footprint: Path,
+        output_file: Path,
+        *,
+        ground_elevation_m: float,
+    ) -> City3DRun:
         """Reconstruct one OBJ model through the stable wrapper contract."""
         for source in (point_cloud, footprint):
             if not source.is_file():
@@ -50,6 +57,7 @@ class City3DClient:
             str(point_cloud.resolve()),
             str(footprint.resolve()),
             str(output_file.resolve()),
+            str(ground_elevation_m),
         )
         try:
             environment = os.environ.copy()

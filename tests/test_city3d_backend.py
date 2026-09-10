@@ -24,6 +24,7 @@ def _write_cloud(path: Path) -> None:
     cloud.x = np.array([724_000.0, 724_001.0])
     cloud.y = np.array([4_372_000.0, 4_372_001.0])
     cloud.z = np.array([20.0, 21.0])
+    cloud.classification = np.full(2, 2, dtype=np.uint8)
     cloud.write(path)
 
 
@@ -55,6 +56,7 @@ def test_assess_city3d_inputs_accepts_projected_laz_and_simple_polygon(tmp_path:
     assert assessment.point_count == 2
     assert assessment.epsg == 25830
     assert assessment.footprint_vertex_count == 3
+    assert assessment.ground_elevation_m == pytest.approx(20.5)
 
 
 def test_assess_city3d_inputs_rejects_multipolygon(tmp_path: Path) -> None:
@@ -79,14 +81,28 @@ def test_assess_city3d_inputs_rejects_polygon_holes(tmp_path: Path) -> None:
 
 
 class SuccessfulRunner:
-    def reconstruct(self, point_cloud: Path, footprint: Path, output_file: Path) -> City3DRun:
+    def reconstruct(
+        self,
+        point_cloud: Path,
+        footprint: Path,
+        output_file: Path,
+        *,
+        ground_elevation_m: float,
+    ) -> City3DRun:
         output_file.parent.mkdir(parents=True)
         output_file.write_text("v 0 0 0\n", encoding="utf-8")
         return City3DRun((), output_file, "", "")
 
 
 class FailingRunner:
-    def reconstruct(self, point_cloud: Path, footprint: Path, output_file: Path) -> City3DRun:
+    def reconstruct(
+        self,
+        point_cloud: Path,
+        footprint: Path,
+        output_file: Path,
+        *,
+        ground_elevation_m: float,
+    ) -> City3DRun:
         raise City3DExecutionError("native process failed")
 
 
