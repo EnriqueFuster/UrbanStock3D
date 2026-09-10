@@ -65,6 +65,42 @@ def write_cube(path: Path, *, omit_wall: bool = False) -> None:
     path.write_text(json.dumps(metadata) + "\n" + json.dumps(feature) + "\n", encoding="utf-8")
 
 
+def write_roof_with_hole(path: Path) -> None:
+    metadata = {
+        "type": "CityJSON",
+        "version": "2.0",
+        "transform": {"scale": [1.0, 1.0, 1.0], "translate": [0.0, 0.0, 0.0]},
+    }
+    feature = {
+        "type": "CityJSONFeature",
+        "id": "roof-with-hole",
+        "vertices": [
+            [0, 0, 10],
+            [10, 0, 10],
+            [10, 10, 10],
+            [0, 10, 10],
+            [4, 4, 10],
+            [4, 6, 10],
+            [6, 6, 10],
+            [6, 4, 10],
+        ],
+        "CityObjects": {
+            "part": {
+                "type": "BuildingPart",
+                "geometry": [
+                    {
+                        "type": "Solid",
+                        "lod": "2.2",
+                        "boundaries": [[[[0, 1, 2, 3], [4, 5, 6, 7]]]],
+                        "semantics": {"surfaces": [{"type": "RoofSurface"}], "values": [[0]]},
+                    }
+                ],
+            }
+        },
+    }
+    path.write_text(json.dumps(metadata) + "\n" + json.dumps(feature) + "\n", encoding="utf-8")
+
+
 def test_accepts_watertight_semantic_solid_aligned_with_footprint(tmp_path: Path) -> None:
     model = tmp_path / "cube.city.jsonl"
     write_cube(model)
@@ -122,3 +158,21 @@ def test_measures_independent_point_to_roof_distances(tmp_path: Path) -> None:
     assert report.distance_rmse_m == pytest.approx(np.sqrt(1.08 / 4))
     assert report.distance_p95_m == pytest.approx(0.88)
     assert report.within_020m_ratio == pytest.approx(0.75)
+
+
+def test_roof_fit_respects_surface_interior_rings(tmp_path: Path) -> None:
+    model = tmp_path / "roof-with-hole.city.jsonl"
+    lidar = tmp_path / "roof.las"
+    write_roof_with_hole(model)
+    header = laspy.LasHeader(point_format=6, version="1.4")
+    cloud = laspy.LasData(header)
+    cloud.x = np.array([5.0])
+    cloud.y = np.array([5.0])
+    cloud.z = np.array([10.0])
+    cloud.classification = np.array([6], dtype=np.uint8)
+    cloud.write(lidar)
+
+    report = assess_cityjson_lidar_fit(model, lidar, FOOTPRINT)
+
+    assert report.distance_median_m == pytest.approx(1.0)
+    assert report.roof_triangle_count == 8

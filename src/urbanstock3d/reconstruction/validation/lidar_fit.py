@@ -6,6 +6,7 @@ from typing import Any
 
 import laspy
 import numpy as np
+from shapely import Polygon, constrained_delaunay_triangles  # type: ignore[import-untyped]
 
 from urbanstock3d.formats.cityjson import lod_surfaces, read_cityjsonseq, transformed_vertices
 from urbanstock3d.processors.lidar import BUILDING_CLASS, points_in_polygon
@@ -127,16 +128,49 @@ def _roof_triangles(
     for surface in lod_surfaces(feature, lod):
         if surface.semantic_type != "RoofSurface":
             continue
-        if len(surface.rings) != 1:
-            raise ValueError("Roof fit does not support surfaces with interior rings")
-        ring = surface.rings[0]
-        if len(ring) > 3:
-            used_fan = True
-        for index in range(1, len(ring) - 1):
-            triangles.append(vertices[np.asarray((ring[0], ring[index], ring[index + 1]))])
+        surface_triangles = _triangulate_surface(surface.rings, vertices)
+        used_fan |= len(surface.rings) > 1 or len(surface.rings[0]) > 3
+        triangles.extend(surface_triangles)
     if not triangles:
         raise ValueError(f"CityJSON feature contains no LoD {lod} roof triangles")
     return triangles, used_fan
+
+
+def _triangulate_surface(
+    rings: tuple[tuple[int, ...], ...],
+    vertices: np.ndarray[Any, np.dtype[np.float64]],
+) -> list[np.ndarray[Any, np.dtype[np.float64]]]:
+    """Triangulate one planar 3D surface without filling its interior rings."""
+    if not rings or len(rings[0]) < 3:
+        raise ValueError("Roof surface has no valid exterior ring")
+    exterior = vertices[np.asarray(rings[0])]
+    normal = np.zeros(3, dtype=np.float64)
+    for first, second in zip(exterior, np.roll(exterior, -1, axis=0)):
+        normal += np.cross(first, second)
+    if not np.any(normal):
+        raise ValueError("Roof surface is degenerate")
+    projected_axes = tuple(index for index in range(3) if index != int(np.argmax(np.abs(normal))))
+    projected_rings = [vertices[np.asarray(ring)][:, projected_axes] for ring in rings]
+    polygon = Polygon(projected_rings[0], projected_rings[1:])
+    if not polygon.is_valid or polygon.area <= 0:
+        raise ValueError("Roof surface projection is not a valid polygon")
+
+    coordinate_indices: dict[tuple[float, float], int] = {}
+    for ring in rings:
+        for index in ring:
+            coordinate = vertices[index, projected_axes]
+            coordinate_indices[(float(coordinate[0]), float(coordinate[1]))] = index
+    result: list[np.ndarray[Any, np.dtype[np.float64]]] = []
+    for triangle in constrained_delaunay_triangles(polygon).geoms:
+        coordinates = list(triangle.exterior.coords)[:-1]
+        try:
+            indices = [coordinate_indices[(float(x), float(y))] for x, y in coordinates]
+        except KeyError as error:
+            raise ValueError("Roof triangulation introduced an unknown vertex") from error
+        result.append(vertices[np.asarray(indices)])
+    if not result:
+        raise ValueError("Roof surface could not be triangulated")
+    return result
 
 
 def point_triangle_distance(
