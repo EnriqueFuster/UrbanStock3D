@@ -23,3 +23,7 @@ class ProviderResponseError(ProviderError):
 
 class RooferExecutionError(UrbanStockError):
     """Raised when the external Roofer reconstruction process fails."""
+
+
+class City3DExecutionError(UrbanStockError):
+    """Raised when the external City3D reconstruction process fails."""

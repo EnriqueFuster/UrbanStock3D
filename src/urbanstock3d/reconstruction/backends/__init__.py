@@ -5,6 +5,7 @@ from urbanstock3d.reconstruction.backends.base import (
     ReconstructionBackend,
 )
 from urbanstock3d.reconstruction.backends.city3d import (
+    City3DBackend,
     City3DInputAssessment,
     assess_city3d_inputs,
 )
@@ -14,6 +15,7 @@ from urbanstock3d.reconstruction.backends.roofer import RooferBackend
 __all__ = [
     "BackendCapabilities",
     "BackendRegistry",
+    "City3DBackend",
     "City3DInputAssessment",
     "ReconstructionBackend",
     "RooferBackend",

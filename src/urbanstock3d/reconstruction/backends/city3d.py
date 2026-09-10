@@ -3,9 +3,25 @@
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 import laspy
+
+from urbanstock3d.errors import City3DExecutionError
+from urbanstock3d.providers.city3d import City3DRun
+from urbanstock3d.reconstruction.backends.base import BackendCapabilities
+from urbanstock3d.reconstruction.enums import BackendName, LodRequest, ReconstructionStatus
+from urbanstock3d.reconstruction.models import (
+    GeometryProvenance,
+    ReconstructionEvidence,
+    ReconstructionResult,
+)
+
+
+class City3DRunner(Protocol):
+    """Narrow native-client interface required by the backend adapter."""
+
+    def reconstruct(self, point_cloud: Path, footprint: Path, output_file: Path) -> City3DRun: ...
 
 
 @dataclass(frozen=True)
@@ -23,6 +39,64 @@ class City3DInputAssessment:
         payload["point_cloud"] = str(self.point_cloud)
         payload["footprint"] = str(self.footprint)
         return payload
+
+
+class City3DBackend:
+    """Expose the native City3D wrapper through the shared backend contract."""
+
+    capabilities = BackendCapabilities(
+        name=BackendName.CITY3D,
+        supported_lods=frozenset({LodRequest.LOD22}),
+        requires_lidar=True,
+        requires_dsm=False,
+        requires_orthophoto=False,
+        requires_gpu=False,
+        learned_geometry=False,
+        maturity="research_candidate",
+        output_kind="OBJ",
+    )
+
+    def __init__(self, client: City3DRunner, output_root: Path) -> None:
+        self.client = client
+        self.output_root = output_root
+
+    def is_available(self) -> bool:
+        return True
+
+    def reconstruct(
+        self,
+        *,
+        evidence: ReconstructionEvidence,
+        lod: LodRequest,
+    ) -> ReconstructionResult:
+        if lod is not LodRequest.LOD22:
+            raise ValueError("City3D currently supports only the detailed LoD2.2 candidate")
+        if not isinstance(evidence.lidar_points, Path) or not isinstance(evidence.footprint, Path):
+            raise TypeError("City3D evidence must contain pathlib.Path inputs")
+        try:
+            assess_city3d_inputs(evidence.lidar_points, evidence.footprint)
+            output_file = self.output_root / evidence.building_id / "city3d.obj"
+            run = self.client.reconstruct(evidence.lidar_points, evidence.footprint, output_file)
+        except (City3DExecutionError, OSError, ValueError) as error:
+            return ReconstructionResult(
+                status=ReconstructionStatus.FAILED,
+                requested_lod=lod,
+                targeted_lod=lod,
+                delivered_lod=None,
+                backend=BackendName.CITY3D,
+                model_path=None,
+                provenance=None,
+                reasons=(str(error),),
+            )
+        return ReconstructionResult(
+            status=ReconstructionStatus.SUCCESS,
+            requested_lod=lod,
+            targeted_lod=lod,
+            delivered_lod=lod,
+            backend=BackendName.CITY3D,
+            model_path=run.output_file,
+            provenance=GeometryProvenance(lidar_observed=True),
+        )
 
 
 def assess_city3d_inputs(point_cloud: Path, footprint: Path) -> City3DInputAssessment:
