@@ -51,6 +51,18 @@ class LidarFitReport:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class LidarResiduals:
+    """Selected LiDAR observations and their exact model distances."""
+
+    points: np.ndarray[Any, np.dtype[np.float64]]
+    distances_m: np.ndarray[Any, np.dtype[np.float64]]
+    source_point_count: int
+    selected_point_count: int
+    roof_triangle_count: int
+    warnings: tuple[str, ...] = ()
+
+
 def assess_cityjson_lidar_fit(
     model_path: Path,
     lidar_path: Path,
@@ -61,9 +73,65 @@ def assess_cityjson_lidar_fit(
 ) -> LidarFitReport:
     """Measure exact 3D distances from sampled roof points to roof triangles."""
     parameters = parameters or LidarFitParameters()
+    residuals = compute_cityjson_lidar_residuals(
+        model_path, lidar_path, footprint, lod=lod, parameters=parameters
+    )
+    distances = residuals.distances_m
+    return LidarFitReport(
+        source_roof_point_count=residuals.source_point_count,
+        selected_roof_point_count=residuals.selected_point_count,
+        sampled_roof_point_count=len(residuals.points),
+        roof_triangle_count=residuals.roof_triangle_count,
+        distance_median_m=float(np.median(distances)),
+        distance_rmse_m=float(np.sqrt(np.mean(np.square(distances)))),
+        distance_p95_m=float(np.percentile(distances, 95)),
+        within_020m_ratio=_within_ratio(distances, 0.2),
+        within_050m_ratio=_within_ratio(distances, 0.5),
+        within_100m_ratio=_within_ratio(distances, 1.0),
+        warnings=residuals.warnings,
+    )
+
+
+def compute_cityjson_lidar_residuals(
+    model_path: Path,
+    lidar_path: Path,
+    footprint: Footprint,
+    *,
+    lod: str = "2.2",
+    parameters: LidarFitParameters | None = None,
+) -> LidarResiduals:
+    """Return spatial observations and residuals for visual diagnostics."""
+    parameters = parameters or LidarFitParameters()
     metadata, feature = read_cityjsonseq(model_path)
     vertices = transformed_vertices(metadata, feature)
     triangles, used_fan_triangulation = _roof_triangles(feature, vertices, lod)
+    points, source_count, selected_count, selection_warning = _load_roof_observations(
+        lidar_path, footprint, parameters
+    )
+    distances = np.array(
+        [
+            min(point_triangle_distance(point, triangle) for triangle in triangles)
+            for point in points
+        ]
+    )
+    warnings = (
+        ("non-triangular roof faces used constrained triangulation",)
+        if used_fan_triangulation
+        else ()
+    ) + (selection_warning,)
+    return LidarResiduals(
+        points=points,
+        distances_m=distances,
+        source_point_count=source_count,
+        selected_point_count=selected_count,
+        roof_triangle_count=len(triangles),
+        warnings=warnings,
+    )
+
+
+def _load_roof_observations(
+    lidar_path: Path, footprint: Footprint, parameters: LidarFitParameters
+) -> tuple[np.ndarray[Any, np.dtype[np.float64]], int, int, str]:
     cloud = laspy.read(lidar_path)
     classification = np.asarray(cloud.classification, dtype=np.uint8)
     building = classification == BUILDING_CLASS
@@ -84,32 +152,11 @@ def assess_cityjson_lidar_fit(
             len(points), parameters.sample_size, replace=False
         )
         points = points[indices]
-    distances = np.array(
-        [
-            min(point_triangle_distance(point, triangle) for triangle in triangles)
-            for point in points
-        ]
+    warning = (
+        f"roof observations selected with {selection.method}: "
+        f"{selection.selected_point_count}/{selection.source_point_count}"
     )
-    warnings = (
-        ("non-triangular roof faces used fan triangulation",) if used_fan_triangulation else ()
-    )
-    return LidarFitReport(
-        source_roof_point_count=source_count,
-        selected_roof_point_count=selection.selected_point_count,
-        sampled_roof_point_count=len(points),
-        roof_triangle_count=len(triangles),
-        distance_median_m=float(np.median(distances)),
-        distance_rmse_m=float(np.sqrt(np.mean(np.square(distances)))),
-        distance_p95_m=float(np.percentile(distances, 95)),
-        within_020m_ratio=_within_ratio(distances, 0.2),
-        within_050m_ratio=_within_ratio(distances, 0.5),
-        within_100m_ratio=_within_ratio(distances, 1.0),
-        warnings=(
-            *warnings,
-            f"roof observations selected with {selection.method}: "
-            f"{selection.selected_point_count}/{selection.source_point_count}",
-        ),
-    )
+    return points, source_count, selection.selected_point_count, warning
 
 
 def _within_ratio(

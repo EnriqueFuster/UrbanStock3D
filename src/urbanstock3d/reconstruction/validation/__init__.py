@@ -8,11 +8,14 @@ from urbanstock3d.reconstruction.validation.cityjson import (
 from urbanstock3d.reconstruction.validation.lidar_fit import (
     LidarFitParameters,
     LidarFitReport,
+    LidarResiduals,
     assess_cityjson_lidar_fit,
+    compute_cityjson_lidar_residuals,
 )
 from urbanstock3d.reconstruction.validation.obj import (
     ObjQualityReport,
     assess_obj_lidar_fit,
+    compute_obj_lidar_residuals,
     read_obj,
     validate_obj,
 )
@@ -33,6 +36,7 @@ __all__ = [
     "CityJsonQualityReport",
     "LidarFitParameters",
     "LidarFitReport",
+    "LidarResiduals",
     "ObjQualityReport",
     "QualityConfidence",
     "ReconstructionQualityParameters",
@@ -41,6 +45,8 @@ __all__ = [
     "RoofObservationReport",
     "assess_cityjson_lidar_fit",
     "assess_obj_lidar_fit",
+    "compute_cityjson_lidar_residuals",
+    "compute_obj_lidar_residuals",
     "evaluate_reconstruction_quality",
     "read_obj",
     "select_roof_observations",

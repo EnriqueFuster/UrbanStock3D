@@ -5,10 +5,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-import laspy
 import numpy as np
 
-from urbanstock3d.processors.lidar import BUILDING_CLASS, points_in_polygon
 from urbanstock3d.reconstruction.quality.lidar import Footprint
 from urbanstock3d.reconstruction.validation.cityjson import (
     CityJsonQualityParameters,
@@ -19,9 +17,10 @@ from urbanstock3d.reconstruction.validation.cityjson import (
 from urbanstock3d.reconstruction.validation.lidar_fit import (
     LidarFitParameters,
     LidarFitReport,
+    LidarResiduals,
+    _load_roof_observations,
     point_triangle_distance,
 )
-from urbanstock3d.reconstruction.validation.roof_observations import select_roof_observations
 
 
 @dataclass(frozen=True)
@@ -163,47 +162,54 @@ def assess_obj_lidar_fit(
 ) -> LidarFitReport:
     """Measure roof observations against upward-facing City3D triangles."""
     parameters = parameters or LidarFitParameters()
-    vertices, faces = read_obj(model_path)
-    triangles = _roof_triangles(vertices, faces)
-    cloud = laspy.read(lidar_path)
-    classification = np.asarray(cloud.classification, dtype=np.uint8)
-    building = classification == BUILDING_CLASS
-    x, y, z = (np.asarray(axis)[building] for axis in (cloud.x, cloud.y, cloud.z))
-    inside = np.zeros(x.shape, dtype=np.bool_)
-    for polygon in footprint:
-        inside |= points_in_polygon(x, y, polygon)
-    points = np.column_stack((x[inside], y[inside], z[inside]))
-    source_count = len(points)
-    if source_count == 0:
-        raise ValueError("No classified roof points exist inside the footprint")
-    selected, selection = select_roof_observations(points, parameters=parameters.observations)
-    points = points[selected]
-    if len(points) > parameters.sample_size:
-        indices = np.random.default_rng(parameters.random_seed).choice(
-            len(points), parameters.sample_size, replace=False
-        )
-        points = points[indices]
-    distances = np.asarray(
-        [
-            min(point_triangle_distance(point, triangle) for triangle in triangles)
-            for point in points
-        ]
+    residuals = compute_obj_lidar_residuals(
+        model_path, lidar_path, footprint, parameters=parameters
     )
+    distances = residuals.distances_m
     return LidarFitReport(
-        source_roof_point_count=source_count,
-        selected_roof_point_count=selection.selected_point_count,
-        sampled_roof_point_count=len(points),
-        roof_triangle_count=len(triangles),
+        source_roof_point_count=residuals.source_point_count,
+        selected_roof_point_count=residuals.selected_point_count,
+        sampled_roof_point_count=len(residuals.points),
+        roof_triangle_count=residuals.roof_triangle_count,
         distance_median_m=float(np.median(distances)),
         distance_rmse_m=float(np.sqrt(np.mean(np.square(distances)))),
         distance_p95_m=float(np.percentile(distances, 95)),
         within_020m_ratio=float(np.mean(distances <= 0.2 + 1e-9)),
         within_050m_ratio=float(np.mean(distances <= 0.5 + 1e-9)),
         within_100m_ratio=float(np.mean(distances <= 1.0 + 1e-9)),
+        warnings=residuals.warnings,
+    )
+
+
+def compute_obj_lidar_residuals(
+    model_path: Path,
+    lidar_path: Path,
+    footprint: Footprint,
+    *,
+    parameters: LidarFitParameters | None = None,
+) -> LidarResiduals:
+    """Return spatial observations and residuals for an OBJ diagnostic plot."""
+    parameters = parameters or LidarFitParameters()
+    vertices, faces = read_obj(model_path)
+    triangles = _roof_triangles(vertices, faces)
+    points, source_count, selected_count, selection_warning = _load_roof_observations(
+        lidar_path, footprint, parameters
+    )
+    distances = np.asarray(
+        [
+            min(point_triangle_distance(point, triangle) for triangle in triangles)
+            for point in points
+        ]
+    )
+    return LidarResiduals(
+        points=points,
+        distances_m=distances,
+        source_point_count=source_count,
+        selected_point_count=selected_count,
+        roof_triangle_count=len(triangles),
         warnings=(
             "OBJ roof faces inferred from orientation and elevation",
-            f"roof observations selected with {selection.method}: "
-            f"{selection.selected_point_count}/{selection.source_point_count}",
+            selection_warning,
         ),
     )
 
