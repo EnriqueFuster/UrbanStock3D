@@ -21,8 +21,12 @@ def test_city3d_client_builds_wrapper_command(tmp_path: Path) -> None:
         output.write_text("v 0 0 0\n", encoding="utf-8")
         return subprocess.CompletedProcess(command, 0, "complete\n", "")
 
+    runtime_directory = tmp_path / "runtime"
+    runtime_directory.mkdir()
     with patch("urbanstock3d.providers.city3d.subprocess.run", side_effect=completed) as run:
-        result = City3DClient(str(executable)).reconstruct(point_cloud, footprint, output)
+        result = City3DClient(str(executable), runtime_directory=runtime_directory).reconstruct(
+            point_cloud, footprint, output
+        )
 
     command = run.call_args.args[0]
     assert command == (
@@ -32,6 +36,7 @@ def test_city3d_client_builds_wrapper_command(tmp_path: Path) -> None:
         str(output.resolve()),
     )
     assert result.output_file == output
+    assert run.call_args.kwargs["env"]["PATH"].startswith(str(runtime_directory.resolve()))
 
 
 def test_city3d_client_reports_process_failure(tmp_path: Path) -> None:

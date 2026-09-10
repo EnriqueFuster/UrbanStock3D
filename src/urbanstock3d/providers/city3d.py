@@ -1,5 +1,6 @@
 """Native City3D wrapper integration."""
 
+import os
 import shutil
 import subprocess
 from dataclasses import dataclass
@@ -21,11 +22,22 @@ class City3DRun:
 class City3DClient:
     """Run the UrbanStock3D City3D wrapper without a command shell."""
 
-    def __init__(self, executable: str = "urbanstock-city3d", *, timeout_seconds: float = 600.0):
+    def __init__(
+        self,
+        executable: str = "urbanstock-city3d",
+        *,
+        timeout_seconds: float = 600.0,
+        runtime_directory: Path | None = None,
+    ):
         if timeout_seconds <= 0:
             raise ValueError("City3D timeout must be positive")
         self.executable = _resolve_executable(executable)
         self.timeout_seconds = timeout_seconds
+        if runtime_directory is not None and not runtime_directory.is_dir():
+            raise City3DExecutionError(
+                f"City3D runtime directory does not exist: {runtime_directory}"
+            )
+        self.runtime_directory = runtime_directory
 
     def reconstruct(self, point_cloud: Path, footprint: Path, output_file: Path) -> City3DRun:
         """Reconstruct one OBJ model through the stable wrapper contract."""
@@ -40,6 +52,11 @@ class City3DClient:
             str(output_file.resolve()),
         )
         try:
+            environment = os.environ.copy()
+            if self.runtime_directory is not None:
+                environment["PATH"] = (
+                    f"{self.runtime_directory.resolve()}{os.pathsep}{environment['PATH']}"
+                )
             result = subprocess.run(
                 command,
                 check=False,
@@ -47,6 +64,7 @@ class City3DClient:
                 text=True,
                 timeout=self.timeout_seconds,
                 cwd=output_file.parent,
+                env=environment,
             )
         except (OSError, subprocess.TimeoutExpired) as error:
             raise City3DExecutionError(f"Unable to execute City3D: {error}") from error

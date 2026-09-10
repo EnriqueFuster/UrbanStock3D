@@ -13,13 +13,17 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("footprint", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--executable", default="urbanstock-city3d")
+    parser.add_argument("--runtime-directory", type=Path)
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_arguments()
     assess_city3d_inputs(args.point_cloud, args.footprint)
-    run = City3DClient(args.executable).reconstruct(
+    run = City3DClient(
+        args.executable,
+        runtime_directory=args.runtime_directory,
+    ).reconstruct(
         args.point_cloud,
         args.footprint,
         args.output,
