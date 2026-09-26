@@ -12,12 +12,23 @@ def main() -> None:
     parser.add_argument("--config", type=Path, default=Path("config/vision/roof_objects.yaml"))
     parser.add_argument("--dataset", type=Path, default=Path("data/vision/rid2/yolo/dataset.yaml"))
     parser.add_argument("--run-name", default="yolo26s-seg-rid2-v1")
+    parser.add_argument("--epochs", type=int, default=None, help="Override the configured epochs.")
+    parser.add_argument(
+        "--fraction",
+        type=float,
+        default=1.0,
+        help="Fraction of training images to use, between 0 and 1.",
+    )
     parser.add_argument(
         "--smoke-test",
         action="store_true",
         help="Train one epoch on 2%% of the data to verify the pipeline.",
     )
     arguments = parser.parse_args()
+    if arguments.epochs is not None and arguments.epochs <= 0:
+        parser.error("--epochs must be greater than zero")
+    if not 0 < arguments.fraction <= 1:
+        parser.error("--fraction must be greater than zero and at most one")
 
     config = load_roof_objects_config(arguments.config)
     taxonomy = load_taxonomy(Path("config/vision/taxonomy.yaml"))
@@ -43,8 +54,8 @@ def main() -> None:
         {"mlflow": True, "weights_dir": str(Path("models/pretrained").resolve())}
     )
 
-    epochs = 1 if arguments.smoke_test else config.training.epochs
-    fraction = 0.02 if arguments.smoke_test else 1.0
+    epochs = 1 if arguments.smoke_test else arguments.epochs or config.training.epochs
+    fraction = 0.02 if arguments.smoke_test else arguments.fraction
     print(f"GPU: {torch.cuda.get_device_name(0)}")
     print(f"Model: {config.model.checkpoint}")
     print(f"Dataset: {config.dataset_id}")

@@ -28,5 +28,6 @@ outputs/*
 /models/
 /mlruns/
 /mlflow.db
+/runs/
 /weights/
 /data/vision/
