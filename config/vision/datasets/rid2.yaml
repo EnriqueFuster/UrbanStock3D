@@ -11,15 +11,15 @@ licence_reviewed: false
 access: open
 
 source_classes:
-  0: {name: pv_module, canonical: pv_panel, note: "Includes photovoltaic and solar-thermal modules."}
-  1: {name: dormer, canonical: null, note: "Outside the initial product taxonomy."}
-  2: {name: window, canonical: null, note: "Cannot safely distinguish roof windows from other windows."}
-  3: {name: skylight, canonical: skylight, note: "Direct canonical mapping."}
-  4: {name: chimney, canonical: chimney, note: "Direct canonical mapping."}
-  5: {name: ac_outlet, canonical: hvac_unit, note: "Merged into the broader HVAC product class."}
-  6: {name: ac_system, canonical: hvac_unit, note: "Merged into the broader HVAC product class."}
-  7: {name: tv_dish, canonical: null, note: "Outside the initial product taxonomy."}
-  8: {name: ladder, canonical: null, note: "Outside the initial product taxonomy."}
-  9: {name: wall, canonical: null, note: "Geometric roof structure, not a rooftop object in V1."}
-  10: {name: balcony, canonical: null, note: "Outside the initial roof-object taxonomy."}
-  11: {name: other, canonical: null, note: "Ambiguous labels must not become production ground truth."}
+  0: {name: pv_module, source_label: PVModule, canonical: pv_panel, note: "Includes photovoltaic and solar-thermal modules."}
+  1: {name: dormer, source_label: Dormer, canonical: null, note: "Outside the initial product taxonomy."}
+  2: {name: window, source_label: Window, canonical: null, note: "Cannot safely distinguish roof windows from other windows."}
+  3: {name: skylight, source_label: Skylight, canonical: skylight, note: "Direct canonical mapping."}
+  4: {name: chimney, source_label: Chimney, canonical: chimney, note: "Direct canonical mapping."}
+  5: {name: ac_outlet, source_label: "AC Outlet", canonical: hvac_unit, note: "Merged into the broader HVAC product class."}
+  6: {name: ac_system, source_label: "AC System", canonical: hvac_unit, note: "Merged into the broader HVAC product class."}
+  7: {name: tv_dish, source_label: TV-Dish, canonical: null, note: "Outside the initial product taxonomy."}
+  8: {name: ladder, source_label: Ladder, canonical: null, note: "Outside the initial product taxonomy."}
+  9: {name: wall, source_label: Wall, canonical: null, note: "Geometric roof structure, not a rooftop object in V1."}
+  10: {name: balcony, source_label: Balcony, canonical: null, note: "Outside the initial roof-object taxonomy."}
+  11: {name: other, source_label: Other, canonical: null, note: "Ambiguous labels must not become production ground truth."}

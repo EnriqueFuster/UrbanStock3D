@@ -1,10 +1,12 @@
 from pathlib import Path
+from zipfile import ZipFile
 
 import pytest
 
 from urbanstock3d.vision.common import load_taxonomy
 from urbanstock3d.vision.roof_objects.datasets import (
     audit_rid2,
+    inspect_zip_archive,
     load_rid2_source,
     verify_rid2_archive,
 )
@@ -35,3 +37,25 @@ def test_archive_verifier_rejects_unpinned_file(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="checksum"):
         verify_rid2_archive(archive, source)
+
+
+def test_zip_inventory_counts_files_without_extracting(tmp_path: Path) -> None:
+    archive = tmp_path / "sample.zip"
+    with ZipFile(archive, "w") as output:
+        output.writestr("RID2/images/one.tif", b"image")
+        output.writestr("RID2/masks/one.png", b"mask")
+
+    inventory = inspect_zip_archive(archive)
+
+    assert inventory.file_count == 2
+    assert inventory.suffix_counts == {".png": 1, ".tif": 1}
+    assert inventory.top_level_entries == ("RID2",)
+
+
+def test_zip_inventory_rejects_parent_traversal(tmp_path: Path) -> None:
+    archive = tmp_path / "unsafe.zip"
+    with ZipFile(archive, "w") as output:
+        output.writestr("../outside.txt", b"unsafe")
+
+    with pytest.raises(ValueError, match="Unsafe ZIP member"):
+        inspect_zip_archive(archive)

@@ -2,7 +2,8 @@
 
 import hashlib
 from enum import StrEnum
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+from zipfile import ZipFile
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
@@ -23,6 +24,7 @@ class SourceClassMapping(DatasetModel):
     """One reviewed source label and its optional product class."""
 
     name: str = Field(min_length=1)
+    source_label: str = Field(min_length=1)
     canonical: str | None
     note: str = Field(min_length=1)
 
@@ -49,6 +51,9 @@ class Rid2SourceConfig(DatasetModel):
             raise ValueError("RID2 source class IDs must be contiguous from zero")
         if self.licence_reviewed and not self.licence:
             raise ValueError("A reviewed dataset must declare its licence")
+        labels = [mapping.source_label for mapping in self.source_classes.values()]
+        if len(labels) != len(set(labels)):
+            raise ValueError("RID2 source labels must be unique")
         return self
 
     @property
@@ -77,6 +82,18 @@ class DatasetAudit(DatasetModel):
     download_allowed: bool
     commercial_reuse_confirmed: bool
     ready_for_conversion: bool
+
+
+class ArchiveInventory(DatasetModel):
+    """Compact, serializable inventory produced without extracting an archive."""
+
+    archive_name: str
+    file_count: int
+    compressed_size_bytes: int
+    uncompressed_size_bytes: int
+    suffix_counts: dict[str, int]
+    top_level_entries: tuple[str, ...]
+    sample_members: tuple[str, ...]
 
 
 def load_rid2_source(path: Path) -> Rid2SourceConfig:
@@ -134,3 +151,42 @@ def verify_rid2_archive(path: Path, source: Rid2SourceConfig) -> None:
             digest.update(chunk)
     if digest.hexdigest() != source.archive_md5:
         raise ValueError("RID2 archive checksum does not match pinned source metadata")
+
+
+def inspect_zip_archive(path: Path, *, sample_size: int = 20) -> ArchiveInventory:
+    """Inventory a ZIP and reject members that could escape an extraction root."""
+    suffix_counts: dict[str, int] = {}
+    top_level_entries: set[str] = set()
+    samples: list[str] = []
+    compressed_size = 0
+    uncompressed_size = 0
+    file_count = 0
+
+    with ZipFile(path) as archive:
+        for member in archive.infolist():
+            normalized_name = member.filename.replace("\\", "/")
+            member_path = PurePosixPath(normalized_name)
+            if member_path.is_absolute() or ".." in member_path.parts:
+                raise ValueError(f"Unsafe ZIP member path: {member.filename}")
+            if not member_path.parts:
+                continue
+            top_level_entries.add(member_path.parts[0])
+            if member.is_dir():
+                continue
+            file_count += 1
+            compressed_size += member.compress_size
+            uncompressed_size += member.file_size
+            suffix = member_path.suffix.lower() or "<no suffix>"
+            suffix_counts[suffix] = suffix_counts.get(suffix, 0) + 1
+            if len(samples) < sample_size:
+                samples.append(normalized_name)
+
+    return ArchiveInventory(
+        archive_name=path.name,
+        file_count=file_count,
+        compressed_size_bytes=compressed_size,
+        uncompressed_size_bytes=uncompressed_size,
+        suffix_counts=dict(sorted(suffix_counts.items())),
+        top_level_entries=tuple(sorted(top_level_entries)),
+        sample_members=tuple(samples),
+    )
