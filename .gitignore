@@ -27,4 +27,6 @@ outputs/*
 # Vision AI runtime artifacts and datasets
 /models/
 /mlruns/
+/mlflow.db
+/weights/
 /data/vision/

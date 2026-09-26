@@ -21,6 +21,8 @@ def test_loads_matching_roof_object_config_and_taxonomy() -> None:
         "skylight": 4,
     }
     assert config.task_type == "instance_segmentation"
+    assert config.model.checkpoint == "models/pretrained/yolo26s-seg.pt"
+    assert config.training.image_size == 512
     assert config.tracking.experiment == "urbanstock/roof_objects"
 
 

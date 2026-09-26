@@ -1,11 +1,11 @@
 task_name: roof_objects
 task_type: instance_segmentation
 taxonomy_version: "1.0"
-dataset_id: null
+dataset_id: rid2-v1.0-canonical-v1
 
 model:
   family: ultralytics
-  checkpoint: yolo26s-seg.pt
+  checkpoint: models/pretrained/yolo26s-seg.pt
   pretrained: true
 
 input:
@@ -14,8 +14,9 @@ input:
   overlap: 0.20
 
 training:
+  image_size: 512
   epochs: 100
-  batch_size: auto
+  batch_size: 8
   seed: 42
   early_stopping_patience: 20
 

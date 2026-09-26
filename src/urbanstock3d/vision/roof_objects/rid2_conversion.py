@@ -156,7 +156,6 @@ def convert_rid2_archive(
         manifest.model_dump_json(indent=2) + "\n", encoding="utf-8"
     )
     dataset_config = {
-        "path": ".",
         "train": "images/train",
         "val": "images/val",
         "names": {identifier: name for name, identifier in taxonomy.roof_objects.items()},

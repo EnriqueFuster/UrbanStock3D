@@ -26,6 +26,7 @@ class InputConfig(ConfigModel):
 
 
 class TrainingConfig(ConfigModel):
+    image_size: int = Field(gt=0)
     epochs: int = Field(gt=0)
     batch_size: int | Literal["auto"]
     seed: int = Field(ge=0)
