@@ -14,6 +14,16 @@ def test_cli_displays_help() -> None:
     assert result.exit_code == 0
     assert "resolve" in result.stdout
     assert "reconstruct" in result.stdout
+    assert "vision" in result.stdout
+
+
+def test_vision_status_validates_v0_contracts() -> None:
+    result = runner.invoke(app, ["vision", "status", "roof_objects"])
+
+    assert result.exit_code == 0
+    assert '"phase": "V0_contracts"' in result.stdout
+    assert '"ready_for_inference": false' in result.stdout
+    assert '"pv_panel": 0' in result.stdout
 
 
 def test_reconstruction_plan_validates_and_serializes_request() -> None:

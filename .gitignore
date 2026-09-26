@@ -23,3 +23,8 @@ htmlcov/
 .env
 outputs/*
 !outputs/.gitkeep
+
+# Vision AI runtime artifacts and datasets
+/models/
+/mlruns/
+/data/vision/

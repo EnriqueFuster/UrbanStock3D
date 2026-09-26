@@ -1,0 +1,7 @@
+version: "1.0"
+roof_objects:
+  pv_panel: 0
+  hvac_unit: 1
+  chimney: 2
+  elevator_overrun: 3
+  skylight: 4

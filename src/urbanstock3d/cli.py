@@ -31,7 +31,9 @@ reconstruct_app = typer.Typer(
     help="Assess and plan adaptive 3D reconstruction.",
     no_args_is_help=True,
 )
+vision_app = typer.Typer(help="Inspect and run Vision AI tasks.", no_args_is_help=True)
 app.add_typer(reconstruct_app, name="reconstruct")
+app.add_typer(vision_app, name="vision")
 
 BuildingQuery = CoordinateQuery | RefcatQuery
 
@@ -39,6 +41,41 @@ BuildingQuery = CoordinateQuery | RefcatQuery
 @app.callback()
 def main() -> None:
     """Run UrbanStock3D commands."""
+
+
+@vision_app.command("status")
+def vision_status(
+    task: Annotated[str, typer.Argument(help="Vision task to inspect.")] = "roof_objects",
+    config_dir: Annotated[
+        Path, typer.Option(help="Directory containing vision YAML configuration.")
+    ] = Path("config/vision"),
+) -> None:
+    """Validate the implemented task contract without pretending a model exists."""
+    if task != "roof_objects":
+        raise typer.BadParameter("Only roof_objects is implemented in Vision V0")
+    from urbanstock3d.vision.common import load_roof_objects_config, load_taxonomy
+
+    try:
+        taxonomy = load_taxonomy(config_dir / "taxonomy.yaml")
+        config = load_roof_objects_config(config_dir / "roof_objects.yaml")
+        config.validate_taxonomy(taxonomy)
+    except (OSError, ValueError, ValidationError) as error:
+        typer.echo(f"Error: {error}", err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(
+        json.dumps(
+            {
+                "task": config.task_name,
+                "phase": "V0_contracts",
+                "ready_for_inference": False,
+                "taxonomy_version": taxonomy.version,
+                "classes": taxonomy.roof_objects,
+                "experiment": config.tracking.experiment,
+                "next_required_artifact": "verified canonical dataset manifest",
+            },
+            indent=2,
+        )
+    )
 
 
 @app.command()

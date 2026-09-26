@@ -1,0 +1,26 @@
+task_name: roof_objects
+task_type: instance_segmentation
+taxonomy_version: "1.0"
+dataset_id: null
+
+model:
+  family: ultralytics
+  checkpoint: yolo26s-seg.pt
+  pretrained: true
+
+input:
+  image_size: 1024
+  tiling: true
+  overlap: 0.20
+
+training:
+  epochs: 100
+  batch_size: auto
+  seed: 42
+  early_stopping_patience: 20
+
+tracking:
+  experiment: urbanstock/roof_objects
+
+export:
+  formats: [onnx]
