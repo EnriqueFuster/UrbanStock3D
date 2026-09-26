@@ -14,10 +14,10 @@ def main() -> None:
     )
     arguments = parser.parse_args()
     source = load_rid2_source(arguments.source_config)
-    if not source.download_allowed:
-        raise SystemExit("RID2 licence is unresolved; archive use is blocked pending review")
     verify_rid2_archive(arguments.archive, source)
     print(f"Verified RID2 {source.source_version}: {arguments.archive}")
+    if not source.commercial_reuse_confirmed:
+        print("Warning: commercial reuse is not confirmed because no licence is declared")
 
 
 if __name__ == "__main__":

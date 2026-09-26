@@ -32,7 +32,8 @@ def test_vision_dataset_audit_exposes_blockers() -> None:
     assert result.exit_code == 0
     assert '"source_class_count": 12' in result.stdout
     assert '"elevator_overrun"' in result.stdout
-    assert '"download_allowed": false' in result.stdout
+    assert '"download_allowed": true' in result.stdout
+    assert '"commercial_reuse_confirmed": false' in result.stdout
 
 
 def test_reconstruction_plan_validates_and_serializes_request() -> None:

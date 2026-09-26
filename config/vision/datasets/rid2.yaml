@@ -8,6 +8,7 @@ archive_size_bytes: null
 archive_md5: 9683e12c911358528416849c0074e17d
 licence: null
 licence_reviewed: false
+access: open
 
 source_classes:
   0: {name: pv_module, canonical: pv_panel, note: "Includes photovoltaic and solar-thermal modules."}

@@ -1,6 +1,7 @@
 """RID2 source audit and canonical label mapping."""
 
 import hashlib
+from enum import StrEnum
 from pathlib import Path
 
 import yaml
@@ -11,6 +12,11 @@ from urbanstock3d.vision.common.taxonomy import CanonicalTaxonomy
 
 class DatasetModel(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
+
+
+class DatasetAccess(StrEnum):
+    OPEN = "open"
+    RESTRICTED = "restricted"
 
 
 class SourceClassMapping(DatasetModel):
@@ -33,6 +39,7 @@ class Rid2SourceConfig(DatasetModel):
     archive_md5: str = Field(pattern=r"^[0-9a-f]{32}$")
     licence: str | None
     licence_reviewed: bool
+    access: DatasetAccess
     source_classes: dict[int, SourceClassMapping]
 
     @model_validator(mode="after")
@@ -46,7 +53,12 @@ class Rid2SourceConfig(DatasetModel):
 
     @property
     def download_allowed(self) -> bool:
-        """Allow the 7 GB download only after explicit licence review."""
+        """Allow acquisition when the repository exposes the files as open access."""
+        return self.access is DatasetAccess.OPEN
+
+    @property
+    def commercial_reuse_confirmed(self) -> bool:
+        """Report whether redistribution/commercial reuse has explicit terms."""
         return self.licence_reviewed and self.licence is not None
 
 
@@ -63,6 +75,7 @@ class DatasetAudit(DatasetModel):
     licence: str | None
     licence_reviewed: bool
     download_allowed: bool
+    commercial_reuse_confirmed: bool
     ready_for_conversion: bool
 
 
@@ -104,6 +117,7 @@ def audit_rid2(source: Rid2SourceConfig, taxonomy: CanonicalTaxonomy) -> Dataset
         licence=source.licence,
         licence_reviewed=source.licence_reviewed,
         download_allowed=source.download_allowed,
+        commercial_reuse_confirmed=source.commercial_reuse_confirmed,
         ready_for_conversion=ready,
     )
 

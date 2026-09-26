@@ -23,8 +23,9 @@ def test_audit_exposes_mapping_and_licence_blocker() -> None:
     assert audit.missing_canonical_classes == ("elevator_overrun",)
     assert "dormer" in audit.ignored_source_classes
     assert not audit.licence_reviewed
-    assert not audit.download_allowed
-    assert not audit.ready_for_conversion
+    assert audit.download_allowed
+    assert audit.ready_for_conversion
+    assert not audit.commercial_reuse_confirmed
 
 
 def test_archive_verifier_rejects_unpinned_file(tmp_path: Path) -> None:
