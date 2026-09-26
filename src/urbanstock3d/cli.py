@@ -78,6 +78,29 @@ def vision_status(
     )
 
 
+@vision_app.command("audit-dataset")
+def vision_audit_dataset(
+    dataset: Annotated[str, typer.Argument(help="Dataset source to audit.")] = "rid2",
+    config_dir: Annotated[
+        Path, typer.Option(help="Directory containing vision YAML configuration.")
+    ] = Path("config/vision"),
+) -> None:
+    """Report dataset readiness without downloading restricted or ambiguous data."""
+    if dataset.lower() != "rid2":
+        raise typer.BadParameter("Only RID2 is implemented in Vision V1")
+    from urbanstock3d.vision.common import load_taxonomy
+    from urbanstock3d.vision.roof_objects import audit_rid2, load_rid2_source
+
+    try:
+        taxonomy = load_taxonomy(config_dir / "taxonomy.yaml")
+        source = load_rid2_source(config_dir / "datasets" / "rid2.yaml")
+        audit = audit_rid2(source, taxonomy)
+    except (OSError, ValueError, ValidationError) as error:
+        typer.echo(f"Error: {error}", err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(audit.model_dump_json(indent=2))
+
+
 @app.command()
 def resolve(
     refcat: Annotated[str | None, typer.Option(help="Cadastral reference.")] = None,

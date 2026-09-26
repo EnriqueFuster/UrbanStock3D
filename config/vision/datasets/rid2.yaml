@@ -1,0 +1,24 @@
+dataset_name: RID2
+source_version: "1.0"
+record_url: https://zenodo.org/records/14062580
+archive_url: https://zenodo.org/records/14062580/files/roof_information_dataset_2.zip
+archive_name: roof_information_dataset_2.zip
+# Zenodo currently reports a rounded 7.0 GB; rely on its exact published MD5.
+archive_size_bytes: null
+archive_md5: 9683e12c911358528416849c0074e17d
+licence: null
+licence_reviewed: false
+
+source_classes:
+  0: {name: pv_module, canonical: pv_panel, note: "Includes photovoltaic and solar-thermal modules."}
+  1: {name: dormer, canonical: null, note: "Outside the initial product taxonomy."}
+  2: {name: window, canonical: null, note: "Cannot safely distinguish roof windows from other windows."}
+  3: {name: skylight, canonical: skylight, note: "Direct canonical mapping."}
+  4: {name: chimney, canonical: chimney, note: "Direct canonical mapping."}
+  5: {name: ac_outlet, canonical: hvac_unit, note: "Merged into the broader HVAC product class."}
+  6: {name: ac_system, canonical: hvac_unit, note: "Merged into the broader HVAC product class."}
+  7: {name: tv_dish, canonical: null, note: "Outside the initial product taxonomy."}
+  8: {name: ladder, canonical: null, note: "Outside the initial product taxonomy."}
+  9: {name: wall, canonical: null, note: "Geometric roof structure, not a rooftop object in V1."}
+  10: {name: balcony, canonical: null, note: "Outside the initial roof-object taxonomy."}
+  11: {name: other, canonical: null, note: "Ambiguous labels must not become production ground truth."}

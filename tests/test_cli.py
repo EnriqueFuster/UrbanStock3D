@@ -26,6 +26,15 @@ def test_vision_status_validates_v0_contracts() -> None:
     assert '"pv_panel": 0' in result.stdout
 
 
+def test_vision_dataset_audit_exposes_blockers() -> None:
+    result = runner.invoke(app, ["vision", "audit-dataset", "rid2"])
+
+    assert result.exit_code == 0
+    assert '"source_class_count": 12' in result.stdout
+    assert '"elevator_overrun"' in result.stdout
+    assert '"download_allowed": false' in result.stdout
+
+
 def test_reconstruction_plan_validates_and_serializes_request() -> None:
     result = runner.invoke(
         app,
