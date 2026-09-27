@@ -1,126 +1,1774 @@
 {
   "schema_version": 1,
-  "selection_area": "Valencia",
+  "selection_area": "Spain",
   "buildings": [
     {
       "building_id": "ES.SDGC.BU.4531917YJ2743B",
       "cadastral_root_id": "4531917YJ2743B",
-      "query": {"longitude": -0.3911611691988909, "latitude": 39.47695517618966},
+      "query": {
+        "longitude": -0.3911611691988909,
+        "latitude": 39.47695517618966
+      },
       "profile": "mid-rise residential block with a mostly flat urban roof",
-      "observed": {"current_use": "1_residential", "part_count": 4, "gross_floor_area_m2": 2698.0, "lidar_grid_cells": ["724-4373-H30"], "lidar_asset_detail_urls": ["https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12598284"]},
-      "coverage": {"catastro": "verified", "facade": "verified", "pnoa": "verified", "lidar": "asset_verified", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 4,
+        "gross_floor_area_m2": 2698.0,
+        "lidar_grid_cells": [
+          "724-4373-H30"
+        ],
+        "lidar_asset_detail_urls": [
+          "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12598284"
+        ]
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "verified",
+        "pnoa": "verified",
+        "lidar": "asset_verified",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.5528801YJ2752H",
       "cadastral_root_id": "5528801YJ2752H",
-      "query": {"longitude": -0.3789, "latitude": 39.4736},
+      "query": {
+        "longitude": -0.3789,
+        "latitude": 39.4736
+      },
       "profile": "historic market with pitched roof sections and domes",
-      "observed": {"current_use": "4_2_retail", "part_count": 8, "gross_floor_area_m2": 16886.0, "lidar_grid_cells": ["725-4373-H30"], "lidar_asset_detail_urls": ["https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12599592"]},
-      "coverage": {"catastro": "verified", "facade": "verified_with_warning", "pnoa": "verified", "lidar": "asset_verified", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "4_2_retail",
+        "part_count": 8,
+        "gross_floor_area_m2": 16886.0,
+        "lidar_grid_cells": [
+          "725-4373-H30"
+        ],
+        "lidar_asset_detail_urls": [
+          "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12599592"
+        ]
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "verified_with_warning",
+        "pnoa": "verified",
+        "lidar": "asset_verified",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.6234202YJ2763E",
       "cadastral_root_id": "6234202YJ2763E",
-      "query": {"longitude": -0.3703, "latitude": 39.4795},
+      "query": {
+        "longitude": -0.3703,
+        "latitude": 39.4795
+      },
       "profile": "historic public complex with courtyards and dense vegetation nearby",
-      "observed": {"current_use": "4_3_publicServices", "part_count": 24, "gross_floor_area_m2": 18356.0, "lidar_grid_cells": ["726-4374-H30"], "lidar_asset_detail_urls": ["https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12585804"]},
-      "coverage": {"catastro": "verified", "facade": "verified", "pnoa": "verified", "lidar": "asset_verified", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "4_3_publicServices",
+        "part_count": 24,
+        "gross_floor_area_m2": 18356.0,
+        "lidar_grid_cells": [
+          "726-4374-H30"
+        ],
+        "lidar_asset_detail_urls": [
+          "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12585804"
+        ]
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "verified",
+        "pnoa": "verified",
+        "lidar": "asset_verified",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.7809805YJ2770H",
       "cadastral_root_id": "7809805YJ2770H",
-      "query": {"longitude": -0.3511, "latitude": 39.4549},
+      "query": {
+        "longitude": -0.3511,
+        "latitude": 39.4549
+      },
       "profile": "large modern public building with a repetitive geometric roof",
-      "observed": {"current_use": "4_3_publicServices", "part_count": 50, "gross_floor_area_m2": 66927.0, "lidar_grid_cells": ["727-4371-H30", "728-4371-H30"], "lidar_asset_detail_urls": ["https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12588251", "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12596402"]},
-      "coverage": {"catastro": "verified", "facade": "verified", "pnoa": "verified", "lidar": "asset_verified", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "4_3_publicServices",
+        "part_count": 50,
+        "gross_floor_area_m2": 66927.0,
+        "lidar_grid_cells": [
+          "727-4371-H30",
+          "728-4371-H30"
+        ],
+        "lidar_asset_detail_urls": [
+          "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12588251",
+          "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12596402"
+        ]
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "verified",
+        "pnoa": "verified",
+        "lidar": "asset_verified",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.9524910YJ2792D",
       "cadastral_root_id": "9524910YJ2792D",
-      "query": {"longitude": -0.3326, "latitude": 39.4693},
+      "query": {
+        "longitude": -0.3326,
+        "latitude": 39.4693
+      },
       "profile": "compact low-rise residential building in a dense coastal neighbourhood",
-      "observed": {"current_use": "1_residential", "part_count": 3, "gross_floor_area_m2": 241.0, "lidar_grid_cells": ["729-4373-H30"], "lidar_asset_detail_urls": ["https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12596877"]},
-      "coverage": {"catastro": "verified", "facade": "verified", "pnoa": "verified", "lidar": "asset_verified", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 3,
+        "gross_floor_area_m2": 241.0,
+        "lidar_grid_cells": [
+          "729-4373-H30"
+        ],
+        "lidar_asset_detail_urls": [
+          "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12596877"
+        ]
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "verified",
+        "pnoa": "verified",
+        "lidar": "asset_verified",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.3051101YJ2735A",
       "cadastral_root_id": "3051101YJ2735A",
-      "query": {"longitude": -0.4075616106937111, "latitude": 39.49441539514275},
+      "query": {
+        "longitude": -0.4075616106937111,
+        "latitude": 39.49441539514275
+      },
       "profile": "large multi-component residential complex with highly fragmented roof geometry",
-      "observed": {"current_use": "1_residential", "part_count": 139, "gross_floor_area_m2": 22892.0, "lidar_grid_cells": ["722-4375-H30", "722-4376-H30", "723-4375-H30", "723-4376-H30"], "lidar_asset_detail_urls": []},
-      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 139,
+        "gross_floor_area_m2": 22892.0,
+        "lidar_grid_cells": [
+          "722-4375-H30",
+          "722-4376-H30",
+          "723-4375-H30",
+          "723-4376-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.4721301YJ2742B",
       "cadastral_root_id": "4721301YJ2742B",
-      "query": {"longitude": -0.3882480080696972, "latitude": 39.468051402925205},
+      "query": {
+        "longitude": -0.3882480080696972,
+        "latitude": 39.468051402925205
+      },
       "profile": "large retail building with an irregular footprint and heterogeneous roof sections",
-      "observed": {"current_use": "4_2_retail", "part_count": 39, "gross_floor_area_m2": 27150.0, "lidar_grid_cells": ["724-4372-H30", "724-4373-H30"], "lidar_asset_detail_urls": []},
-      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "4_2_retail",
+        "part_count": 39,
+        "gross_floor_area_m2": 27150.0,
+        "lidar_grid_cells": [
+          "724-4372-H30",
+          "724-4373-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.0892612YJ2709S",
       "cadastral_root_id": "0892612YJ2709S",
-      "query": {"longitude": -0.43279166418013065, "latitude": 39.53134809029518},
+      "query": {
+        "longitude": -0.43279166418013065,
+        "latitude": 39.53134809029518
+      },
       "profile": "detached low-rise residential building with a compact non-rectangular footprint",
-      "observed": {"current_use": "1_residential", "part_count": 1, "gross_floor_area_m2": 385.0, "lidar_grid_cells": ["720-4379-H30"], "lidar_asset_detail_urls": []},
-      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 1,
+        "gross_floor_area_m2": 385.0,
+        "lidar_grid_cells": [
+          "720-4379-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.2157938YJ2725E",
       "cadastral_root_id": "2157938YJ2725E",
-      "query": {"longitude": -0.4170213594430351, "latitude": 39.499643176074954},
+      "query": {
+        "longitude": -0.4170213594430351,
+        "latitude": 39.499643176074954
+      },
       "profile": "recent residential building selected for user-observed photovoltaic panels",
-      "observed": {"current_use": "1_residential", "part_count": 6, "gross_floor_area_m2": 930.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["722-4376-H30"], "lidar_asset_detail_urls": []},
-      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 6,
+        "gross_floor_area_m2": 930.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "722-4376-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.3458502YJ2735N",
       "cadastral_root_id": "3458502YJ2735N",
-      "query": {"longitude": -0.4022824029460978, "latitude": 39.50188737183907},
+      "query": {
+        "longitude": -0.4022824029460978,
+        "latitude": 39.50188737183907
+      },
       "profile": "large retail building selected for user-observed photovoltaic panels",
-      "observed": {"current_use": "4_2_retail", "part_count": 13, "gross_floor_area_m2": 15363.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["723-4376-H30"], "lidar_asset_detail_urls": []},
-      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "4_2_retail",
+        "part_count": 13,
+        "gross_floor_area_m2": 15363.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "723-4376-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.3012605YJ2731A",
       "cadastral_root_id": "3012605YJ2731A",
-      "query": {"longitude": -0.4089588379616772, "latitude": 39.45961794533138},
+      "query": {
+        "longitude": -0.4089588379616772,
+        "latitude": 39.45961794533138
+      },
       "profile": "large industrial building selected for user-observed photovoltaic panels",
-      "observed": {"current_use": "3_industrial", "part_count": 7, "gross_floor_area_m2": 13753.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["722-4371-H30", "722-4372-H30", "723-4371-H30", "723-4372-H30"], "lidar_asset_detail_urls": []},
-      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 7,
+        "gross_floor_area_m2": 13753.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "722-4371-H30",
+          "722-4372-H30",
+          "723-4371-H30",
+          "723-4372-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.3110815YJ2731A",
       "cadastral_root_id": "3110815YJ2731A",
-      "query": {"longitude": -0.40766719983666727, "latitude": 39.458247622410894},
+      "query": {
+        "longitude": -0.40766719983666727,
+        "latitude": 39.458247622410894
+      },
       "profile": "compact industrial building selected for user-observed photovoltaic panels",
-      "observed": {"current_use": "3_industrial", "part_count": 3, "gross_floor_area_m2": 3612.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["722-4371-H30", "723-4371-H30"], "lidar_asset_detail_urls": []},
-      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 3,
+        "gross_floor_area_m2": 3612.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "722-4371-H30",
+          "723-4371-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.6898034YJ2669H",
       "cadastral_root_id": "6898034YJ2669H",
-      "query": {"longitude": -0.3660184375692722, "latitude": 39.446003199439645},
+      "query": {
+        "longitude": -0.3660184375692722,
+        "latitude": 39.446003199439645
+      },
       "profile": "multi-footprint residential building selected for user-observed photovoltaic panels",
-      "observed": {"current_use": "1_residential", "part_count": 13, "gross_floor_area_m2": 4857.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["726-4370-H30"], "lidar_asset_detail_urls": []},
-      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 13,
+        "gross_floor_area_m2": 4857.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "726-4370-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.8759228YJ2785N",
       "cadastral_root_id": "8759228YJ2785N",
-      "query": {"longitude": -0.34143938173121136, "latitude": 39.50117467717471},
+      "query": {
+        "longitude": -0.34143938173121136,
+        "latitude": 39.50117467717471
+      },
       "profile": "single-part industrial building selected for user-observed photovoltaic panels",
-      "observed": {"current_use": "3_industrial", "part_count": 1, "gross_floor_area_m2": 856.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["728-4376-H30"], "lidar_asset_detail_urls": []},
-      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 1,
+        "gross_floor_area_m2": 856.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "728-4376-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     },
     {
       "building_id": "ES.SDGC.BU.8147017YJ1784N",
       "cadastral_root_id": "8147017YJ1784N",
-      "query": {"longitude": -0.4654028161539684, "latitude": 39.49258189803684},
+      "query": {
+        "longitude": -0.4654028161539684,
+        "latitude": 39.49258189803684
+      },
       "profile": "public-services building selected for user-observed photovoltaic panels",
-      "observed": {"current_use": "4_3_publicServices", "part_count": 4, "gross_floor_area_m2": 2704.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["717-4375-H30"], "lidar_asset_detail_urls": []},
-      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+      "observed": {
+        "current_use": "4_3_publicServices",
+        "part_count": 4,
+        "gross_floor_area_m2": 2704.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "717-4375-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.6421401YJ3962S",
+      "cadastral_root_id": "6421401YJ3962S",
+      "query": {
+        "longitude": -0.24796339567218145,
+        "latitude": 39.645307407783555
+      },
+      "profile": "3_industrial building in Comunitat Valenciana selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunitat Valenciana",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 91,
+        "gross_floor_area_m2": 216782.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "735-4392-H30",
+          "735-4393-H30",
+          "736-4392-H30",
+          "736-4393-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.5343803YJ3954S",
+      "cadastral_root_id": "5343803YJ3954S",
+      "query": {
+        "longitude": -0.2636214840739723,
+        "latitude": 39.66573414902869
+      },
+      "profile": "3_industrial building in Comunitat Valenciana selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunitat Valenciana",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 11,
+        "gross_floor_area_m2": 80948.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "734-4395-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.5540101YJ3943N",
+      "cadastral_root_id": "5540101YJ3943N",
+      "query": {
+        "longitude": -0.2632371012838069,
+        "latitude": 39.66261264683881
+      },
+      "profile": "3_industrial building in Comunitat Valenciana selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunitat Valenciana",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 2,
+        "gross_floor_area_m2": 11756.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "734-4394-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.5540102YJ3953N",
+      "cadastral_root_id": "5540102YJ3953N",
+      "query": {
+        "longitude": -0.2619609897333793,
+        "latitude": 39.66296863644548
+      },
+      "profile": "3_industrial building in Comunitat Valenciana selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunitat Valenciana",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 6,
+        "gross_floor_area_m2": 79637.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "734-4394-H30",
+          "734-4395-H30",
+          "735-4394-H30",
+          "735-4395-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.1460201VK4716A",
+      "cadastral_root_id": "1460201VK4716A",
+      "query": {
+        "longitude": -3.6917534862204238,
+        "latitude": 40.43163334187867
+      },
+      "profile": "4_1_office building in Comunidad de Madrid selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunidad de Madrid",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "4_1_office",
+        "part_count": 15,
+        "gross_floor_area_m2": 7469.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "441-4476-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.1259207VK4715G",
+      "cadastral_root_id": "1259207VK4715G",
+      "query": {
+        "longitude": -3.6937932193394163,
+        "latitude": 40.42995874129379
+      },
+      "profile": "4_1_office building in Comunidad de Madrid selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunidad de Madrid",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "4_1_office",
+        "part_count": 20,
+        "gross_floor_area_m2": 24824.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "441-4476-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.8862901VK3786D",
+      "cadastral_root_id": "8862901VK3786D",
+      "query": {
+        "longitude": -3.7215401646089306,
+        "latitude": 40.43359241752451
+      },
+      "profile": "4_3_publicServices building in Comunidad de Madrid selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunidad de Madrid",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "4_3_publicServices",
+        "part_count": 23,
+        "gross_floor_area_m2": 32611.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "438-4476-H30",
+          "438-4477-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.9107801VK3890E",
+      "cadastral_root_id": "9107801VK3890E",
+      "query": {
+        "longitude": -3.7190976299386143,
+        "latitude": 40.47291228636396
+      },
+      "profile": "1_residential building in Comunidad de Madrid selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunidad de Madrid",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 47,
+        "gross_floor_area_m2": 32994.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "439-4481-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.7813313VK3871D",
+      "cadastral_root_id": "7813313VK3871D",
+      "query": {
+        "longitude": -3.7345178673568067,
+        "latitude": 40.47879748501386
+      },
+      "profile": "1_residential building in Comunidad de Madrid selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunidad de Madrid",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 9,
+        "gross_floor_area_m2": 369.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "437-4482-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.7813321VK3871D",
+      "cadastral_root_id": "7813321VK3871D",
+      "query": {
+        "longitude": -3.7352811801888297,
+        "latitude": 40.47906894510249
+      },
+      "profile": "1_residential building in Comunidad de Madrid selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunidad de Madrid",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 2,
+        "gross_floor_area_m2": 379.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "437-4482-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.7316109VK3871E",
+      "cadastral_root_id": "7316109VK3871E",
+      "query": {
+        "longitude": -3.7400322098599923,
+        "latitude": 40.480734875688086
+      },
+      "profile": "1_residential building in Comunidad de Madrid selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunidad de Madrid",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 6,
+        "gross_floor_area_m2": 507.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "437-4482-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.6811311VK3861B",
+      "cadastral_root_id": "6811311VK3861B",
+      "query": {
+        "longitude": -3.747165935409759,
+        "latitude": 40.47709972498348
+      },
+      "profile": "1_residential building in Comunidad de Madrid selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunidad de Madrid",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 121,
+        "gross_floor_area_m2": 10936.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "436-4481-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.1995001TL7919N",
+      "cadastral_root_id": "1995001TL7919N",
+      "query": {
+        "longitude": -5.733670534978332,
+        "latitude": 41.513611158748546
+      },
+      "profile": "4_3_publicServices building in Castilla y Leon selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Castilla y Leon",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "4_3_publicServices",
+        "part_count": 15,
+        "gross_floor_area_m2": 39525.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "271-4600-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.2533703YH0223S",
+      "cadastral_root_id": "2533703YH0223S",
+      "query": {
+        "longitude": -0.6902609802385342,
+        "latitude": 38.13226094992384
+      },
+      "profile": "1_residential building in Comunitat Valenciana selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunitat Valenciana",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 38,
+        "gross_floor_area_m2": 2372.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "702-4224-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.2134303YH0223S",
+      "cadastral_root_id": "2134303YH0223S",
+      "query": {
+        "longitude": -0.6947076201558915,
+        "latitude": 38.135027521072175
+      },
+      "profile": "1_residential building in Comunitat Valenciana selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunitat Valenciana",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 31,
+        "gross_floor_area_m2": 2066.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "701-4224-H30",
+          "702-4224-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.9574502XH9197S",
+      "cadastral_root_id": "9574502XH9197S",
+      "query": {
+        "longitude": -0.7259438348479427,
+        "latitude": 38.08149263189987
+      },
+      "profile": "1_residential building in Comunitat Valenciana selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Comunitat Valenciana",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 2,
+        "gross_floor_area_m2": 326.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "699-4218-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.7338526WF3773N",
+      "cadastral_root_id": "7338526WF3773N",
+      "query": {
+        "longitude": -2.581727773257191,
+        "latitude": 36.807629512750665
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 3,
+        "gross_floor_area_m2": 209.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "537-4074-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.7338537WF3773N",
+      "cadastral_root_id": "7338537WF3773N",
+      "query": {
+        "longitude": -2.5820840781527075,
+        "latitude": 36.8075787881491
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 3,
+        "gross_floor_area_m2": 209.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "537-4074-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.7437903WF3773N",
+      "cadastral_root_id": "7437903WF3773N",
+      "query": {
+        "longitude": -2.581461341872243,
+        "latitude": 36.806964274310324
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 4,
+        "gross_floor_area_m2": 372.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "537-4074-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.7438729WF3773N",
+      "cadastral_root_id": "7438729WF3773N",
+      "query": {
+        "longitude": -2.581194498196672,
+        "latitude": 36.80719435661505
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 3,
+        "gross_floor_area_m2": 132.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "537-4074-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.1526604UF7612N",
+      "cadastral_root_id": "1526604UF7612N",
+      "query": {
+        "longitude": -4.438825338606259,
+        "latitude": 36.69799606796502
+      },
+      "profile": "4_1_office building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "4_1_office",
+        "part_count": 17,
+        "gross_floor_area_m2": 39284.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "371-4063-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.9817102UF6691N",
+      "cadastral_root_id": "9817102UF6691N",
+      "query": {
+        "longitude": -4.45798289484824,
+        "latitude": 36.69069953335911
+      },
+      "profile": "3_industrial building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 3,
+        "gross_floor_area_m2": 1715.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "369-4062-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.9012104UF6691S",
+      "cadastral_root_id": "9012104UF6691S",
+      "query": {
+        "longitude": -4.467090363335503,
+        "latitude": 36.6865506082337
+      },
+      "profile": "3_industrial building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 1,
+        "gross_floor_area_m2": 1918.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "368-4062-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.9133110UF6693S",
+      "cadastral_root_id": "9133110UF6693S",
+      "query": {
+        "longitude": -4.466246561431535,
+        "latitude": 36.70536354202898
+      },
+      "profile": "3_industrial building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 3,
+        "gross_floor_area_m2": 1777.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "368-4064-H30",
+          "369-4064-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.8834110UF6683S",
+      "cadastral_root_id": "8834110UF6683S",
+      "query": {
+        "longitude": -4.470072255973282,
+        "latitude": 36.70603540585245
+      },
+      "profile": "4_2_retail building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "4_2_retail",
+        "part_count": 15,
+        "gross_floor_area_m2": 5184.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "368-4064-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.8936507UF6683N",
+      "cadastral_root_id": "8936507UF6683N",
+      "query": {
+        "longitude": -4.468799501908646,
+        "latitude": 36.70754602590257
+      },
+      "profile": "3_industrial building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 2,
+        "gross_floor_area_m2": 956.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "368-4064-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.7442132UF6674S",
+      "cadastral_root_id": "7442132UF6674S",
+      "query": {
+        "longitude": -4.48624723303954,
+        "latitude": 36.71281902420494
+      },
+      "profile": "3_industrial building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 3,
+        "gross_floor_area_m2": 1231.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "367-4065-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.7443122UF6674S",
+      "cadastral_root_id": "7443122UF6674S",
+      "query": {
+        "longitude": -4.486302732772518,
+        "latitude": 36.71331077098534
+      },
+      "profile": "3_industrial building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 4,
+        "gross_floor_area_m2": 680.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "367-4065-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.4945601UF6654N",
+      "cadastral_root_id": "4945601UF6654N",
+      "query": {
+        "longitude": -4.513403762914839,
+        "latitude": 36.71541222227737
+      },
+      "profile": "3_industrial building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 7,
+        "gross_floor_area_m2": 5597.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "364-4065-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.29900A02200040",
+      "cadastral_root_id": "29900A02200040",
+      "query": {
+        "longitude": -4.525954646083413,
+        "latitude": 36.707309403117634
+      },
+      "profile": "3_industrial building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "3_industrial",
+        "part_count": 14,
+        "gross_floor_area_m2": 69948.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "363-4064-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.0434108UF3403S",
+      "cadastral_root_id": "0434108UF3403S",
+      "query": {
+        "longitude": -4.8948066105634656,
+        "latitude": 36.518852448267815
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 75,
+        "gross_floor_area_m2": 4862.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "330-4044-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.0434111UF3403S",
+      "cadastral_root_id": "0434111UF3403S",
+      "query": {
+        "longitude": -4.895069159543381,
+        "latitude": 36.51966508502201
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 4,
+        "gross_floor_area_m2": 295.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "330-4044-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.9934104UF2493S",
+      "cadastral_root_id": "9934104UF2493S",
+      "query": {
+        "longitude": -4.900680950074434,
+        "latitude": 36.51931092098773
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 5,
+        "gross_floor_area_m2": 263.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "329-4044-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.0040104UF3404S",
+      "cadastral_root_id": "0040104UF3404S",
+      "query": {
+        "longitude": -4.899526087289974,
+        "latitude": 36.52448146426992
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 6,
+        "gross_floor_area_m2": 218.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "329-4044-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.8638128UF2483N",
+      "cadastral_root_id": "8638128UF2483N",
+      "query": {
+        "longitude": -4.915143006584493,
+        "latitude": 36.52318042392223
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 11,
+        "gross_floor_area_m2": 1913.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "328-4044-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.0995807UF2309N",
+      "cadastral_root_id": "0995807UF2309N",
+      "query": {
+        "longitude": -4.999738685530667,
+        "latitude": 36.482510025417106
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 5,
+        "gross_floor_area_m2": 147.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "320-4040-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.0991120UF2309S",
+      "cadastral_root_id": "0991120UF2309S",
+      "query": {
+        "longitude": -5.000206619773986,
+        "latitude": 36.47818021969833
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 3,
+        "gross_floor_area_m2": 484.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "320-4039-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.2699501TF2129H",
+      "cadastral_root_id": "2699501TF2129H",
+      "query": {
+        "longitude": -6.088180112032186,
+        "latitude": 36.28269418423491
+      },
+      "profile": "1_residential building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "1_residential",
+        "part_count": 5,
+        "gross_floor_area_m2": 4064.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "222-4020-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
+    },
+    {
+      "building_id": "ES.SDGC.BU.001601800WF37C",
+      "cadastral_root_id": "001601800WF37C",
+      "query": {
+        "longitude": -2.647500625245262,
+        "latitude": 36.80234350315771
+      },
+      "profile": "4_2_retail building in Andalucia selected as a photovoltaic candidate",
+      "selection": {
+        "region": "Andalucia",
+        "reason": "photovoltaic_candidate",
+        "source": "user_reported",
+        "verification_status": "pending_visual_review"
+      },
+      "observed": {
+        "current_use": "4_2_retail",
+        "part_count": 7,
+        "gross_floor_area_m2": 32665.0,
+        "photovoltaic_panels": "user_reported",
+        "lidar_grid_cells": [
+          "531-4073-H30",
+          "531-4074-H30"
+        ],
+        "lidar_asset_detail_urls": []
+      },
+      "coverage": {
+        "catastro": "verified",
+        "facade": "pending",
+        "pnoa": "pending",
+        "lidar": "catalog_pending",
+        "mdt": "pending",
+        "snczi": "pending",
+        "ine": "pending"
+      }
     }
   ]
 }

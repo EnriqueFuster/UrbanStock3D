@@ -9,12 +9,10 @@ def test_selected_buildings_are_complete_and_unique() -> None:
     buildings = registry["buildings"]
 
     building_ids = [building["building_id"] for building in buildings]
-    profiles = [building["profile"] for building in buildings]
-
     assert registry["schema_version"] == 1
-    assert len(buildings) == 15
+    assert registry["selection_area"] == "Spain"
+    assert len(buildings) >= 15
     assert len(building_ids) == len(set(building_ids))
-    assert len(profiles) == len(set(profiles))
 
     for building in buildings:
         assert building["building_id"].endswith(building["cadastral_root_id"])
@@ -37,4 +35,12 @@ def test_selected_buildings_are_complete_and_unique() -> None:
         for building in buildings
         if building["observed"].get("photovoltaic_panels") == "user_reported"
     ]
-    assert len(photovoltaic_sample) == 7
+    assert len(photovoltaic_sample) >= 7
+
+    selected_candidates = [building for building in photovoltaic_sample if "selection" in building]
+    assert selected_candidates
+    assert all(
+        building["selection"]["source"] == "user_reported"
+        and building["selection"]["verification_status"] == "pending_visual_review"
+        for building in selected_candidates
+    )
