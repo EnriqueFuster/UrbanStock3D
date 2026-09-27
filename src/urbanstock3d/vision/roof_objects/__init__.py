@@ -10,6 +10,7 @@ from urbanstock3d.vision.roof_objects.service import (
     UltralyticsRoofObjectSegmenter,
     infer_roof_objects,
 )
+from urbanstock3d.vision.roof_objects.vectorization import vectorize_and_clip_roof_objects
 
 __all__ = [
     "RoofObjectSegmenter",
@@ -18,4 +19,5 @@ __all__ = [
     "infer_roof_objects",
     "inspect_zip_archive",
     "load_rid2_source",
+    "vectorize_and_clip_roof_objects",
 ]
