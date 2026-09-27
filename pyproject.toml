@@ -35,6 +35,8 @@ dev = [
 ]
 vision = [
     "mlflow>=3.16,<4",
+    "onnx>=1.19,<2",
+    "onnxruntime>=1.23,<2",
     "torch>=2.14,<2.15",
     "torchvision>=0.29,<0.30",
     "ultralytics>=8.4,<9",
