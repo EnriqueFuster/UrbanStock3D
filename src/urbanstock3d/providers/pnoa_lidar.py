@@ -159,19 +159,23 @@ def discover_cnig_lidar_assets(
 ) -> tuple[CnigLidarAsset, ...]:
     """Resolve every third-coverage LAZ intersecting a buffered footprint bbox."""
     cells = required_grid_cells(footprint_geometry_bbox_utm(geometry), buffer_m=buffer_m)
-    to_wgs84 = Transformer.from_crs(PENINSULA_UTM, WGS84, always_xy=True)
-    assets: list[CnigLidarAsset] = []
-    for cell in cells:
-        center_x = (cell.easting_km + 0.5) * GRID_SIZE_M
-        center_y = (cell.northing_km + 0.5) * GRID_SIZE_M
-        longitude, latitude = to_wgs84.transform(center_x, center_y)
-        asset = _discover_cnig_lidar_asset_at_point(client, longitude, latitude)
-        if asset.grid_cell != cell.identifier:
-            raise ValueError(
-                f"CNIG returned grid cell {asset.grid_cell}, expected {cell.identifier}"
-            )
-        assets.append(asset)
+    assets = [discover_cnig_lidar_cell(client, cell) for cell in cells]
     return tuple(dict.fromkeys(assets))
+
+
+def discover_cnig_lidar_cell(
+    client: httpx.Client,
+    cell: LidarGridCell,
+) -> CnigLidarAsset:
+    """Resolve the current third-coverage asset for one distribution cell."""
+    to_wgs84 = Transformer.from_crs(PENINSULA_UTM, WGS84, always_xy=True)
+    center_x = (cell.easting_km + 0.5) * GRID_SIZE_M
+    center_y = (cell.northing_km + 0.5) * GRID_SIZE_M
+    longitude, latitude = to_wgs84.transform(center_x, center_y)
+    asset = _discover_cnig_lidar_asset_at_point(client, longitude, latitude)
+    if asset.grid_cell != cell.identifier:
+        raise ValueError(f"CNIG returned grid cell {asset.grid_cell}, expected {cell.identifier}")
+    return asset
 
 
 def _discover_cnig_lidar_asset_at_point(
