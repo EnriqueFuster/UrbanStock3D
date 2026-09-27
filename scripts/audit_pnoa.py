@@ -2,20 +2,21 @@
 
 import argparse
 import json
-import math
 from io import BytesIO
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 import httpx
 from PIL import Image
-from pyproj import Transformer
 
 from urbanstock3d.config import Settings
-
-WGS84 = "EPSG:4326"
-PNOA_CRS = "EPSG:25830"
-MAX_IMAGE_DIMENSION = 4096
+from urbanstock3d.providers.pnoa_orthophoto import (
+    PNOA_CRS,
+    projected_building_bbox,
+)
+from urbanstock3d.providers.pnoa_orthophoto import (
+    image_dimensions as image_dimensions,
+)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -40,33 +41,10 @@ def projected_bbox(
     if not positions:
         raise ValueError("Building geometry has no coordinates")
 
-    transformer = Transformer.from_crs(WGS84, PNOA_CRS, always_xy=True)
-    projected = [
-        cast(tuple[float, float], transformer.transform(position[0], position[1]))
-        for position in positions
-    ]
-    xs, ys = zip(*projected, strict=True)
-    return (
-        min(xs) - buffer_m,
-        min(ys) - buffer_m,
-        max(xs) + buffer_m,
-        max(ys) + buffer_m,
+    return projected_building_bbox(
+        {"type": "Polygon", "coordinates": coordinates},
+        buffer_m=buffer_m,
     )
-
-
-def image_dimensions(
-    bbox: tuple[float, float, float, float],
-    pixel_size_m: float,
-) -> tuple[int, int]:
-    """Calculate WMS image dimensions for a target ground pixel size."""
-    if pixel_size_m <= 0:
-        raise ValueError("Pixel size must be positive")
-    min_x, min_y, max_x, max_y = bbox
-    width = math.ceil((max_x - min_x) / pixel_size_m)
-    height = math.ceil((max_y - min_y) / pixel_size_m)
-    if width > MAX_IMAGE_DIMENSION or height > MAX_IMAGE_DIMENSION:
-        raise ValueError("Requested PNOA image exceeds the audit size limit")
-    return width, height
 
 
 def audit_pnoa(
