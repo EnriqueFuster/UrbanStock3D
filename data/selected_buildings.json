@@ -65,6 +65,62 @@
       "profile": "detached low-rise residential building with a compact non-rectangular footprint",
       "observed": {"current_use": "1_residential", "part_count": 1, "gross_floor_area_m2": 385.0, "lidar_grid_cells": ["720-4379-H30"], "lidar_asset_detail_urls": []},
       "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+    },
+    {
+      "building_id": "ES.SDGC.BU.2157938YJ2725E",
+      "cadastral_root_id": "2157938YJ2725E",
+      "query": {"longitude": -0.4170213594430351, "latitude": 39.499643176074954},
+      "profile": "recent residential building selected for user-observed photovoltaic panels",
+      "observed": {"current_use": "1_residential", "part_count": 6, "gross_floor_area_m2": 930.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["722-4376-H30"], "lidar_asset_detail_urls": []},
+      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+    },
+    {
+      "building_id": "ES.SDGC.BU.3458502YJ2735N",
+      "cadastral_root_id": "3458502YJ2735N",
+      "query": {"longitude": -0.4022824029460978, "latitude": 39.50188737183907},
+      "profile": "large retail building selected for user-observed photovoltaic panels",
+      "observed": {"current_use": "4_2_retail", "part_count": 13, "gross_floor_area_m2": 15363.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["723-4376-H30"], "lidar_asset_detail_urls": []},
+      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+    },
+    {
+      "building_id": "ES.SDGC.BU.3012605YJ2731A",
+      "cadastral_root_id": "3012605YJ2731A",
+      "query": {"longitude": -0.4089588379616772, "latitude": 39.45961794533138},
+      "profile": "large industrial building selected for user-observed photovoltaic panels",
+      "observed": {"current_use": "3_industrial", "part_count": 7, "gross_floor_area_m2": 13753.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["722-4371-H30", "722-4372-H30", "723-4371-H30", "723-4372-H30"], "lidar_asset_detail_urls": []},
+      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+    },
+    {
+      "building_id": "ES.SDGC.BU.3110815YJ2731A",
+      "cadastral_root_id": "3110815YJ2731A",
+      "query": {"longitude": -0.40766719983666727, "latitude": 39.458247622410894},
+      "profile": "compact industrial building selected for user-observed photovoltaic panels",
+      "observed": {"current_use": "3_industrial", "part_count": 3, "gross_floor_area_m2": 3612.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["722-4371-H30", "723-4371-H30"], "lidar_asset_detail_urls": []},
+      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+    },
+    {
+      "building_id": "ES.SDGC.BU.6898034YJ2669H",
+      "cadastral_root_id": "6898034YJ2669H",
+      "query": {"longitude": -0.3660184375692722, "latitude": 39.446003199439645},
+      "profile": "multi-footprint residential building selected for user-observed photovoltaic panels",
+      "observed": {"current_use": "1_residential", "part_count": 13, "gross_floor_area_m2": 4857.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["726-4370-H30"], "lidar_asset_detail_urls": []},
+      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+    },
+    {
+      "building_id": "ES.SDGC.BU.8759228YJ2785N",
+      "cadastral_root_id": "8759228YJ2785N",
+      "query": {"longitude": -0.34143938173121136, "latitude": 39.50117467717471},
+      "profile": "single-part industrial building selected for user-observed photovoltaic panels",
+      "observed": {"current_use": "3_industrial", "part_count": 1, "gross_floor_area_m2": 856.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["728-4376-H30"], "lidar_asset_detail_urls": []},
+      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
+    },
+    {
+      "building_id": "ES.SDGC.BU.8147017YJ1784N",
+      "cadastral_root_id": "8147017YJ1784N",
+      "query": {"longitude": -0.4654028161539684, "latitude": 39.49258189803684},
+      "profile": "public-services building selected for user-observed photovoltaic panels",
+      "observed": {"current_use": "4_3_publicServices", "part_count": 4, "gross_floor_area_m2": 2704.0, "photovoltaic_panels": "user_reported", "lidar_grid_cells": ["717-4375-H30"], "lidar_asset_detail_urls": []},
+      "coverage": {"catastro": "verified", "facade": "pending", "pnoa": "pending", "lidar": "catalog_pending", "mdt": "pending", "snczi": "pending", "ine": "pending"}
     }
   ]
 }

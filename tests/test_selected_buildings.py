@@ -12,7 +12,7 @@ def test_selected_buildings_are_complete_and_unique() -> None:
     profiles = [building["profile"] for building in buildings]
 
     assert registry["schema_version"] == 1
-    assert len(buildings) == 8
+    assert len(buildings) == 15
     assert len(building_ids) == len(set(building_ids))
     assert len(profiles) == len(set(profiles))
 
@@ -31,3 +31,10 @@ def test_selected_buildings_are_complete_and_unique() -> None:
             asset_urls = building["observed"]["lidar_asset_detail_urls"]
             assert len(asset_urls) == len(building["observed"]["lidar_grid_cells"])
             assert all(url.startswith("https://centrodedescargas.cnig.es/") for url in asset_urls)
+
+    photovoltaic_sample = [
+        building
+        for building in buildings
+        if building["observed"].get("photovoltaic_panels") == "user_reported"
+    ]
+    assert len(photovoltaic_sample) == 7
