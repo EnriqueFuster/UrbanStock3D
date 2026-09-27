@@ -2626,6 +2626,7 @@ dependencies = [
     { name = "pyyaml" },
     { name = "rasterio" },
     { name = "scipy" },
+    { name = "shapely" },
     { name = "typer" },
 ]
 
@@ -2640,7 +2641,6 @@ dev = [
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
-    { name = "shapely" },
 ]
 vision = [
     { name = "mlflow" },
@@ -2663,6 +2663,7 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6,<7" },
     { name = "rasterio", specifier = ">=1.4,<2" },
     { name = "scipy", specifier = ">=1.16,<2" },
+    { name = "shapely", specifier = ">=2.1,<3" },
     { name = "typer", specifier = ">=0.17,<1" },
 ]
 
@@ -2677,7 +2678,6 @@ dev = [
     { name = "pytest", specifier = ">=8.4,<9" },
     { name = "pytest-cov", specifier = ">=6.2,<7" },
     { name = "ruff", specifier = ">=0.12,<0.13" },
-    { name = "shapely", specifier = ">=2.1,<3" },
 ]
 vision = [
     { name = "mlflow", specifier = ">=3.16,<4" },

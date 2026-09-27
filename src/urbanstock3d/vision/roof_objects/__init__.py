@@ -1,5 +1,6 @@
 """Roof-object instance-segmentation task boundary."""
 
+from urbanstock3d.vision.roof_objects.batch import evaluate_selected_buildings
 from urbanstock3d.vision.roof_objects.datasets import (
     audit_rid2,
     inspect_zip_archive,
@@ -16,6 +17,7 @@ __all__ = [
     "RoofObjectSegmenter",
     "UltralyticsRoofObjectSegmenter",
     "audit_rid2",
+    "evaluate_selected_buildings",
     "infer_roof_objects",
     "inspect_zip_archive",
     "load_rid2_source",
